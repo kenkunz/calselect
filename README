@@ -1,0 +1,51 @@
+CalSelect
+
+Responsibilities:
+- knows about (binds to) input field
+- handles other event bindings (for clicking off of, etc.)
+- knows "state" - selected date (just the input field?), opened/closed
+- responsible for doing something with the calendar DOM object -- i.e., insert into DOM, hide/show
+- already has to know about "current page month" ... so if it has "pager" responsibility, could use state for that
+
+initialize:
+- bind to field
+- add event handler(s)
+
+show:
+- create div, insert into dom
+- initialize date from field
+- init a CalPage with element, pageMonth, selectedDate, setDate callback
+
+hide:
+- hide div?
+- delete div?
+
+setDate:
+- accepts date arg, sets field
+- passed as (bound) callback to CalPage
+
+observers:
+- on-focus: show the calendar
+- on-blur: hide the calendar... unless the user just clicked one of the dates
+
+
+CalPage
+
+Responsibilities:
+- knows how to create a calendar page
+- knows how to give it back to a client that wants to do something with it...
+- /or/ knows how to take a function as an arg (like a block) that does something with the DOM object
+- /or/ knows how to take an element as an arg and replace contents with self (perhaps just on init?)
+- stateless - you initialize it, it does its job, it goes away
+
+initialize:
+- takes element, pageMonth, selectedDate, setDateCallback
+- "visits" the element -- replaces contents with new CalPage
+
+knows how to build the calendar
+
+
+advance:
+- initialize new CalPage with ... blah
+- /or/ 
+- set new pageMonth, re-visit element ?
