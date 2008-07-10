@@ -69,41 +69,83 @@ Element.addMethods('TBODY', TableSectionMethods);
 
 var CalSelect = Class.create({
 
-  initialize: function(element) {
-    this.element = $(element);
-    this.initSelectedDate();
-    this.setupObservers();
+  initialize: function(dateField) {
+    this.dateField = $(dateField);
+    this.initCalWrapper();
+    this.initObservers();
   },
 
-  initSelectedDate: function() {
-    var dateStr = $F(this.element);
+  initCalWrapper: function() {
+    this.calWrapper = $(document.createElement('div'));
+    this.calWrapper.addClassName('calendar');
+    this.calWrapper.hide();
+    this.dateField.insert({after: this.calWrapper});
+  },
+
+  initObservers: function() {
+    this.dateField.observe('focus', this.show.bind(this));
+    this.dateField.observe('keydown', function(event) {
+      if (event.keyCode == Event.KEY_TAB) {
+        this.hide();
+      }
+    }.bindAsEventListener(this));
+
+    document.observe('click', this.hide.bind(this));
+
+    this.dateField.observe('click', Event.stop);
+    this.calWrapper.observe('click', Event.stop);
+  },
+
+  show: function() {
+    this.dateField.select();
+    var selectedDate = this.getDate();
+    var pageDate = selectedDate ? selectedDate.clone() : new Date();
+    new CalPage(this.calWrapper, pageDate, selectedDate, this.setDate.bind(this));
+    this.calWrapper.show();
+  },
+
+  hide: function() {
+    this.calWrapper.hide();
+  },
+
+  getDate: function() {
+    var dateStr = $F(this.dateField);
     var dateMatch = dateStr.match(/^\s*(\d{1,2})\/(\d{1,2})\/(\d{2}(\d{2})?)\s*$/);
     if (dateMatch) {
       var month = dateMatch[1] - 1;
       var day   = dateMatch[2];
       var year  = dateMatch[3];
       if (!dateMatch[4]) { year = '20' + year; }
-      this.selectedDate = new Date(year, month, day);
+      return new Date(year, month, day);
+    } else {
+      return null;
     }
   },
 
-  setupObservers: function() {
-    this.element.observe('focus', this.show.bind(this));
-  },
-  
-  show: function() {
-    this.pageDate = this.selectedDate ? this.selectedDate.clone() : new Date();
-    this.createCalTable();
-    this.element.insert({after: this.calTable});
+  setDate: function(date) {
+    this.dateField.setValue(date.toShortString());
+    this.hide();
+  }
+
+})
+
+var CalPage = Class.create({
+
+  initialize: function(calWrapper, pageDate, selectedDate, dateSelectCallback) {
+    this.pageDate = pageDate;
+    this.selectedDate = selectedDate;
+    this.dateSelectCallback = dateSelectCallback;
+    this.insertCalPage(calWrapper);
   },
 
-  hide: function() {
-    if (this.calTable) { this.calTable.remove(); }
+  insertCalPage: function(calWrapper) {
+    this.createCalTable();
+    calWrapper.innerHTML = '';
+    calWrapper.insert(this.calTable);
   },
 
   createCalTable: function() {
     this.calTable = $(document.createElement('table'));
-    this.calTable.addClassName('calendar');
     var tHead = $(document.createElement('thead'));
     this.calTable.insert(tHead);
 
@@ -142,7 +184,8 @@ var CalSelect = Class.create({
   },
 
   page: function(months) {
-    // TODO: refactor - this doesn't feel right...
+    // TODO: refactor - just instantiate a new CalPage with the right args!
+    // also, rename to "advance" or something
     var oldPage = this.calTable;
     this.pageDate.setMonth(this.pageDate.getMonth() + months);
     this.createCalTable();
@@ -167,7 +210,7 @@ var CalSelect = Class.create({
     var end   = this.pageDate.endOfMonth().endOfWeek();
     var month = this.pageDate.getMonth();
 
-    var callback = this.setDate.bind(this);
+    var callback = this.dateSelectCallback;
     var selectedDate = this.selectedDate;
     var today = new Date();
 
@@ -181,12 +224,6 @@ var CalSelect = Class.create({
       td.insert(date.getDate());
       td.observe('click', callback.curry(date));
     });
-  },
-
-  setDate: function(date) {
-    this.selectedDate = date;
-    this.element.setValue(date.toShortString());
-    this.hide();
   }
 
-})
+});
