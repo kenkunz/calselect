@@ -101,7 +101,14 @@ var CalSelect = Class.create({
     var selectedDate = this.getDate();
     var pageDate = selectedDate ? selectedDate.clone() : new Date();
     new CalPage(this.calWrapper, pageDate, selectedDate, this.setDate.bind(this));
+    this.setPosition();
     this.calWrapper.show();
+  },
+
+  setPosition: function() {
+    var offset = this.dateField.positionedOffset();
+    offset.top += this.dateField.getHeight();
+    this.calWrapper.setStyle({left: offset.left+'px', top: offset.top+'px'});    
   },
 
   hide: function() {
