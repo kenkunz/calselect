@@ -2,7 +2,7 @@ Object.extend(Date.prototype, {
 
   clone: function(func) {
     date = new Date(this);
-    if (func) { func(date) }
+    if (func) { func(date); }
     return date;
   },
 
@@ -19,8 +19,8 @@ Object.extend(Date.prototype, {
   },
   
   endOfMonth: function() {
-    // FIXME: this has a bug for months with 31 days!
     return this.clone(function(date) {
+      date.setDate(1);
       date.setMonth(date.getMonth() + 1);
       date.setDate(0);
     });
@@ -133,12 +133,12 @@ var CalSelect = Class.create({
     this.hide();
   }
 
-})
+});
 
 var CalPage = Class.create({
 
   initialize: function(calWrapper, pageDate, selectedDate, dateSelectCallback) {
-    this.pageDate = pageDate;
+    this.pageDate = pageDate.startOfMonth();
     this.selectedDate = selectedDate;
     this.dateSelectCallback = dateSelectCallback;
     this.calWrapper = calWrapper;
