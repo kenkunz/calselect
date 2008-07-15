@@ -200,28 +200,40 @@ var CalPage = Class.create({
   },
 
   createMonth: function() {
+    this.calTable.insert(new CalMonth(this.pageDate, this.selectedDate, this.dateSelectCallback));
+  }
+
+});
+
+var CalMonth = Class.create({
+
+  initialize: function(monthDate, selectedDate, dateSelectCallback) {
+    this.monthDate = monthDate;
+    this.selectedDate = selectedDate;
+    this.callback = dateSelectCallback;
+  },
+
+  toElement: function() {
     var tBody = $(document.createElement('tbody'));
-    this.calTable.insert(tBody);
     var tr, td;
 
-    var begin = this.pageDate.startOfMonth().startOfWeek();
-    var end   = this.pageDate.endOfMonth().endOfWeek();
-    var month = this.pageDate.getMonth();
-
-    var callback = this.dateSelectCallback;
-    var selectedDate = this.selectedDate;
+    var begin = this.monthDate.startOfMonth().startOfWeek();
+    var end   = this.monthDate.endOfMonth().endOfWeek();
+    var month = this.monthDate.getMonth();
     var today = new Date();
 
     $R(begin, end).each(function(date) {
       if (date.getDay() == 0) { tr = tBody.addRow(); }
       td = $(document.createElement('td'));
       if (date.getMonth() != month) { td.addClassName('other'); }
-      if (date.same(selectedDate)) { td.addClassName('selected'); }
+      if (date.same(this.selectedDate)) { td.addClassName('selected'); }
       if (date.same(today)) { td.addClassName('today'); }
       tr.insert(td);
       td.insert(date.getDate());
-      td.observe('click', callback.curry(date));
-    });
+      td.observe('click', this.callback.curry(date));
+    }.bind(this));
+
+    return tBody;
   }
 
 });
