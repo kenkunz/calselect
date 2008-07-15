@@ -85,9 +85,7 @@ var CalSelect = Class.create({
   initObservers: function() {
     this.dateField.observe('focus', this.show.bind(this));
     this.dateField.observe('keydown', function(event) {
-      if (event.keyCode == Event.KEY_TAB) {
-        this.hide();
-      }
+      if (event.keyCode == Event.KEY_TAB) { this.hide(); }
     }.bindAsEventListener(this));
 
     document.observe('click', this.hide.bind(this));
@@ -142,13 +140,15 @@ var CalPage = Class.create({
     this.pageDate = pageDate;
     this.selectedDate = selectedDate;
     this.dateSelectCallback = dateSelectCallback;
+    // TODO: refactor - either we shouldn't hold onto calWrapper, or if we do
+    // then we should use it as an instance variable
+    this.calWrapper = calWrapper;
     this.insertCalPage(calWrapper);
   },
 
   insertCalPage: function(calWrapper) {
     this.createCalTable();
-    calWrapper.innerHTML = '';
-    calWrapper.insert(this.calTable);
+    calWrapper.update(this.calTable);
   },
 
   createCalTable: function() {
@@ -187,16 +187,12 @@ var CalPage = Class.create({
     th.addClassName('pager');
     tr.insert(th);
     th.insert(text);
-    th.observe('click', this.page.bind(this, months));
+    th.observe('click', this.advance.bind(this, months));
   },
 
-  page: function(months) {
-    // TODO: refactor - just instantiate a new CalPage with the right args!
-    // also, rename to "advance" or something
-    var oldPage = this.calTable;
+  advance: function(months) {
     this.pageDate.setMonth(this.pageDate.getMonth() + months);
-    this.createCalTable();
-    oldPage.replace(this.calTable);
+    new CalPage(this.calWrapper, this.pageDate, this.selectedDate, this.dateSelectCallback);
   },
 
   createDayHeaders: function() {
