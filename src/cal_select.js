@@ -140,19 +140,14 @@ var CalPage = Class.create({
     this.pageDate = pageDate;
     this.selectedDate = selectedDate;
     this.dateSelectCallback = dateSelectCallback;
-    // TODO: refactor - either we shouldn't hold onto calWrapper, or if we do
-    // then we should use it as an instance variable
     this.calWrapper = calWrapper;
-    this.insertCalPage(calWrapper);
-  },
-
-  insertCalPage: function(calWrapper) {
     this.createCalTable();
-    calWrapper.update(this.calTable);
   },
 
   createCalTable: function() {
     this.calTable = $(document.createElement('table'));
+    this.calWrapper.update(this.calTable);
+
     var tHead = $(document.createElement('thead'));
     this.calTable.insert(tHead);
 
