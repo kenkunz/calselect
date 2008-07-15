@@ -19,6 +19,7 @@ Object.extend(Date.prototype, {
   },
   
   endOfMonth: function() {
+    // FIXME: this has a bug for months with 31 days!
     return this.clone(function(date) {
       date.setMonth(date.getMonth() + 1);
       date.setDate(0);
@@ -153,7 +154,7 @@ var CalPage = Class.create({
 
     this.createMonthHeader();
     this.createDayHeaders();
-    this.createMonth();
+    this.calTable.insert(new CalMonth(this));
   },
 
   createMonthHeader: function() {
@@ -199,39 +200,34 @@ var CalPage = Class.create({
     });
   },
 
-  createMonth: function() {
-    this.calTable.insert(new CalMonth(this.pageDate, this.selectedDate, this.dateSelectCallback));
-  }
-
 });
 
 var CalMonth = Class.create({
 
-  initialize: function(monthDate, selectedDate, dateSelectCallback) {
-    this.monthDate = monthDate;
-    this.selectedDate = selectedDate;
-    this.callback = dateSelectCallback;
+  initialize: function(calPage) {
+    this.calPage = calPage;
   },
 
   toElement: function() {
     var tBody = $(document.createElement('tbody'));
     var tr, td;
 
-    var begin = this.monthDate.startOfMonth().startOfWeek();
-    var end   = this.monthDate.endOfMonth().endOfWeek();
-    var month = this.monthDate.getMonth();
+    var calPage = this.calPage;
+    var begin = calPage.pageDate.startOfMonth().startOfWeek();
+    var end   = calPage.pageDate.endOfMonth().endOfWeek();
+    var month = calPage.pageDate.getMonth();
     var today = new Date();
 
     $R(begin, end).each(function(date) {
       if (date.getDay() == 0) { tr = tBody.addRow(); }
       td = $(document.createElement('td'));
       if (date.getMonth() != month) { td.addClassName('other'); }
-      if (date.same(this.selectedDate)) { td.addClassName('selected'); }
+      if (date.same(calPage.selectedDate)) { td.addClassName('selected'); }
       if (date.same(today)) { td.addClassName('today'); }
       tr.insert(td);
       td.insert(date.getDate());
-      td.observe('click', this.callback.curry(date));
-    }.bind(this));
+      td.observe('click', calPage.dateSelectCallback.curry(date));
+    });
 
     return tBody;
   }
