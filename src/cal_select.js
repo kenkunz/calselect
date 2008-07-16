@@ -242,7 +242,6 @@ var CalDate = Class.create({
     this.date = date;
     this.calPage = calPage;
     this.selectCallback = calPage.dateSelectCallback.curry(date);
-    this.calCell = $(document.createElement('td'));
 
     this.isOtherMonth = (date.getMonth() != calPage.monthIdx());
     this.isSelected   = (date.sameDateAs(calPage.selectedDate));
@@ -250,17 +249,18 @@ var CalDate = Class.create({
   },
 
   cssClassMap: $H({isOtherMonth: 'other', isSelected: 'selected', isToday: 'today'}),
-  addConditionalClasses: function() {
+  addConditionalClasses: function(element) {
     this.cssClassMap.each(function(pair) {
-      if (this[pair.key]) { this.calCell.addClassName(pair.value); }
+      if (this[pair.key]) { element.addClassName(pair.value); }
     }.bind(this));
   },
 
   toElement: function() {
-    this.addConditionalClasses();
-    this.calCell.insert(this.date.getDate());
-    this.calCell.observe('click', this.selectCallback);
-    return this.calCell;
+    var calCell = $(document.createElement('td'));
+    this.addConditionalClasses(calCell);
+    calCell.insert(this.date.getDate());
+    calCell.observe('click', this.selectCallback);
+    return calCell;
   }
   
 });
