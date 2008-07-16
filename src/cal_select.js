@@ -64,14 +64,6 @@ Object.extend(Date.prototype, {
 
 });
 
-var TableSectionMethods = {
-  addRow: function(tHead) {
-    return $(tHead.appendChild(document.createElement('tr')));
-  }
-};
-Element.addMethods('THEAD', TableSectionMethods);
-Element.addMethods('TBODY', TableSectionMethods);
-
 var CalSelect = Class.create({
 
   initialize: function(dateField) {
@@ -84,6 +76,7 @@ var CalSelect = Class.create({
     this.calWrapper = $(document.createElement('div'));
     this.calWrapper.observe('calSelect:dateSelected', function(event) {
       this.setDate(event.memo.date);
+      event.stop();
     }.bindAsEventListener(this));
     this.calWrapper.addClassName('calendar');
     this.calWrapper.hide();
@@ -254,7 +247,10 @@ var CalMonth = Class.create({
     var calPage = this.calPage;
 
     this.dateRange().each(function(date) {
-      if (date.getDay() == 0) { calRow = calBody.addRow(); }
+      if (date.getDay() == 0) {
+        calRow = $(document.createElement('tr'));
+        calBody.appendChild(calRow);
+      }
       calRow.insert(new CalDate(date, calPage));
     });
 
