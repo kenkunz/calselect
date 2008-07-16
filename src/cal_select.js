@@ -145,6 +145,10 @@ var CalPage = Class.create({
     this.createCalTable();
   },
 
+  monthIdx: function() {
+    return this.pageDate.getMonth();
+  },
+
   createCalTable: function() {
     this.calTable = $(document.createElement('table'));
     this.calWrapper.update(this.calTable);
@@ -208,28 +212,51 @@ var CalMonth = Class.create({
     this.calPage = calPage;
   },
 
+  dateRange: function() {
+    return $R(this.calPage.pageDate.startOfMonth().startOfWeek(),
+      this.calPage.pageDate.endOfMonth().endOfWeek());
+  },
+
   toElement: function() {
-    var tBody = $(document.createElement('tbody'));
-    var tr, td;
-
+    var calBody = $(document.createElement('tbody'));
+    var calRow;
     var calPage = this.calPage;
-    var begin = calPage.pageDate.startOfMonth().startOfWeek();
-    var end   = calPage.pageDate.endOfMonth().endOfWeek();
-    var month = calPage.pageDate.getMonth();
-    var today = new Date();
 
-    $R(begin, end).each(function(date) {
-      if (date.getDay() == 0) { tr = tBody.addRow(); }
-      td = $(document.createElement('td'));
-      if (date.getMonth() != month) { td.addClassName('other'); }
-      if (date.same(calPage.selectedDate)) { td.addClassName('selected'); }
-      if (date.same(today)) { td.addClassName('today'); }
-      tr.insert(td);
-      td.insert(date.getDate());
-      td.observe('click', calPage.dateSelectCallback.curry(date));
+    this.dateRange().each(function(date) {
+      if (date.getDay() == 0) { calRow = calBody.addRow(); }
+      calRow.insert(new CalDate(date, calPage));
     });
 
-    return tBody;
+    return calBody;
   }
 
+});
+
+var CalDate = Class.create({
+  
+  initialize: function(date, calPage) {
+    this.date = date;
+    this.calPage = calPage;
+    this.selectCallback = calPage.dateSelectCallback.curry(date);
+    this.calCell = $(document.createElement('td'));
+
+    this.isOtherMonth = (date.getMonth() != calPage.monthIdx());
+    this.isSelected   = (date.same(calPage.selectedDate));
+    this.isToday      = (this.date.same(new Date()));
+  },
+
+  cssClassMap: $H({isOtherMonth: 'other', isSelected: 'selected', isToday: 'today'}),
+  addConditionalClasses: function() {
+    this.cssClassMap.each(function(pair) {
+      if (this[pair.key]) { this.calCell.addClassName(pair.value); }
+    }.bind(this));
+  },
+
+  toElement: function() {
+    this.addConditionalClasses();
+    this.calCell.insert(this.date.getDate());
+    this.calCell.observe('click', this.selectCallback);
+    return this.calCell;
+  }
+  
 });
