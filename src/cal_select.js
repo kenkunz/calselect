@@ -154,7 +154,6 @@ var CalPage = Class.create({
 
   toElement: function() {
     this.calTable = $(document.createElement('table'));
-
     var tHead = $(document.createElement('thead'));
     this.calTable.insert(tHead);
 
@@ -182,49 +181,59 @@ var CalMonthHeader = Class.create({
   toElement: function() {
     var tr = document.createElement('tr');
 
-    this.createLeftPager(tr);
+    tr.insert(new CalPager('left', this.pagerCallback));
 
     var month = $(document.createElement('th'));
     month.colSpan = 5;
     tr.insert(month);
     month.insert(this.pageDate.getMonthName() + ' ' + this.pageDate.getFullYear());
     
-    this.createRightPager(tr);
+    tr.insert(new CalPager('right', this.pagerCallback));
 
     return tr;
   },
 
+});
+
+var CalPager = Class.create({
+
+  initialize: function(direction, pagerCallback) {
+    this.direction = direction.capitalize();
+    this.pagerCallback = pagerCallback;
+  },
+
   createLeftPager: function(tr) {
-    this.createPager(tr, '&#171;', -1);
+    return this.createPager(tr, '&#171;', -1);
   },
 
   createRightPager: function(tr) {
-    this.createPager(tr, '&#187;', 1);
+    return this.createPager(tr, '&#187;', 1);
   },
 
   createPager: function(tr, text, months) {
     var th = $(document.createElement('th'));
     th.addClassName('pager');
-    tr.insert(th);
     th.insert(text);
     th.observe('click', this.pagerCallback.curry(months));
-  }
+    return th
+  },
 
+  toElement: function() {
+    return this['create'+this.direction+'Pager']();
+  }
+  
 });
 
 var CalDayHeader = Class.create({
-
   headers: $w('S M T W T F S'),
-
   toElement: function() {
-    var tr = document.createElement('tr')
+    var row = document.createElement('tr')
     this.headers.each(function(day) {
-      var th = $(document.createElement('th'));
-      tr.insert(th.insert(day));
+      var cell = $(document.createElement('th'));
+      row.insert(cell.insert(day));
     });
-    return tr;
+    return row;
   }
-  
 });
 
 var CalMonth = Class.create({
