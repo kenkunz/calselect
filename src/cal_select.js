@@ -2,7 +2,7 @@ Object.extend(Date.prototype, {
 
   clone: function(func) {
     date = new Date(this);
-    if (func) { func(date); }
+    func && func(date);
     return date;
   },
 
@@ -54,8 +54,12 @@ Object.extend(Date.prototype, {
     return [ mm, dd, yy ].join('/');
   },
 
-  same: function(other) {
+  sameDateAs: function(other) {
     return ((other instanceof Date) && (this.toShortString() == other.toShortString()));
+  },
+
+  isToday: function() {
+    return this.sameDateAs(new Date());
   }
 
 });
@@ -241,8 +245,8 @@ var CalDate = Class.create({
     this.calCell = $(document.createElement('td'));
 
     this.isOtherMonth = (date.getMonth() != calPage.monthIdx());
-    this.isSelected   = (date.same(calPage.selectedDate));
-    this.isToday      = (this.date.same(new Date()));
+    this.isSelected   = (date.sameDateAs(calPage.selectedDate));
+    this.isToday      = (this.date.isToday());
   },
 
   cssClassMap: $H({isOtherMonth: 'other', isSelected: 'selected', isToday: 'today'}),
