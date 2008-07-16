@@ -202,15 +202,15 @@ var CalPager = Class.create({
     this.pagerCallback = pagerCallback;
   },
 
-  createLeftPager: function(tr) {
-    return this.createPager(tr, '&#171;', -1);
+  createLeftPager: function() {
+    return this.createPager('&#171;', -1);
   },
 
-  createRightPager: function(tr) {
-    return this.createPager(tr, '&#187;', 1);
+  createRightPager: function() {
+    return this.createPager('&#187;', 1);
   },
 
-  createPager: function(tr, text, months) {
+  createPager: function(text, months) {
     var th = $(document.createElement('th'));
     th.addClassName('pager');
     th.insert(text);
