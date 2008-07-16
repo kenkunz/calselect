@@ -103,7 +103,8 @@ var CalSelect = Class.create({
     this.dateField.select();
     var selectedDate = this.getDate();
     var pageDate = selectedDate ? selectedDate.clone() : new Date();
-    new CalPage(this.calWrapper, pageDate, selectedDate, this.setDate.bind(this));
+    var calPage = new CalPage(pageDate, selectedDate, this.setDate.bind(this));
+    this.calWrapper.update(calPage);
     this.setPosition();
     this.calWrapper.show();
   },
@@ -141,21 +142,23 @@ var CalSelect = Class.create({
 
 var CalPage = Class.create({
 
-  initialize: function(calWrapper, pageDate, selectedDate, dateSelectCallback) {
+  initialize: function(pageDate, selectedDate, dateSelectCallback) {
     this.pageDate = pageDate.startOfMonth();
     this.selectedDate = selectedDate;
     this.dateSelectCallback = dateSelectCallback;
-    this.calWrapper = calWrapper;
-    this.createCalTable();
   },
 
   monthIdx: function() {
     return this.pageDate.getMonth();
   },
 
+  toElement: function() {
+    this.createCalTable();
+    return this.calTable;
+  },
+
   createCalTable: function() {
     this.calTable = $(document.createElement('table'));
-    this.calWrapper.update(this.calTable);
 
     var tHead = $(document.createElement('thead'));
     this.calTable.insert(tHead);
@@ -196,7 +199,7 @@ var CalPage = Class.create({
 
   advance: function(months) {
     this.pageDate.setMonth(this.pageDate.getMonth() + months);
-    new CalPage(this.calWrapper, this.pageDate, this.selectedDate, this.dateSelectCallback);
+    this.calTable.replace(this);
   },
 
   createDayHeaders: function() {
@@ -206,7 +209,7 @@ var CalPage = Class.create({
       tr.insert(th);
       th.insert(day);
     });
-  },
+  }
 
 });
 
