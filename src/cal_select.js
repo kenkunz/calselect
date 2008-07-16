@@ -159,7 +159,7 @@ var CalPage = Class.create({
     this.calTable.insert(tHead);
 
     this.calTable.tHead.insert(new CalMonthHeader(this.pageDate, this.advance.bind(this)));
-    this.createDayHeaders();
+    this.calTable.tHead.insert(new CalDayHeader());
     this.calTable.insert(new CalMonth(this));
     
     return this.calTable;
@@ -169,15 +169,6 @@ var CalPage = Class.create({
     this.pageDate.setMonth(this.pageDate.getMonth() + months);
     this.calTable.replace(this);
   },
-
-  createDayHeaders: function() {
-    var tr = this.calTable.tHead.addRow();
-    $w('S M T W T F S').each(function(day) {
-      var th = $(document.createElement('th'));
-      tr.insert(th);
-      th.insert(day);
-    });
-  }
 
 });
 
@@ -221,6 +212,20 @@ var CalMonthHeader = Class.create({
 
 });
 
+var CalDayHeader = Class.create({
+
+  headers: $w('S M T W T F S'),
+
+  toElement: function() {
+    var tr = document.createElement('tr')
+    this.headers.each(function(day) {
+      var th = $(document.createElement('th'));
+      tr.insert(th.insert(day));
+    });
+    return tr;
+  }
+  
+});
 
 var CalMonth = Class.create({
 
