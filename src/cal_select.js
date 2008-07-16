@@ -153,48 +153,16 @@ var CalPage = Class.create({
   },
 
   toElement: function() {
-    this.createCalTable();
-    return this.calTable;
-  },
-
-  createCalTable: function() {
     this.calTable = $(document.createElement('table'));
 
     var tHead = $(document.createElement('thead'));
     this.calTable.insert(tHead);
 
-    this.createMonthHeader();
+    this.calTable.tHead.insert(new CalMonthHeader(this.pageDate, this.advance.bind(this)));
     this.createDayHeaders();
     this.calTable.insert(new CalMonth(this));
-  },
-
-  createMonthHeader: function() {
-    var tr = this.calTable.tHead.addRow();
-
-    this.createLeftPager(tr);
-
-    var month = $(document.createElement('th'));
-    month.colSpan = 5;
-    tr.insert(month);
-    month.insert(this.pageDate.getMonthName() + ' ' + this.pageDate.getFullYear());
     
-    this.createRightPager(tr);
-  },
-
-  createLeftPager: function(tr) {
-    this.createPager(tr, '&#171;', -1);
-  },
-
-  createRightPager: function(tr) {
-    this.createPager(tr, '&#187;', 1);
-  },
-
-  createPager: function(tr, text, months) {
-    var th = $(document.createElement('th'));
-    th.addClassName('pager');
-    tr.insert(th);
-    th.insert(text);
-    th.observe('click', this.advance.bind(this, months));
+    return this.calTable;
   },
 
   advance: function(months) {
@@ -212,6 +180,47 @@ var CalPage = Class.create({
   }
 
 });
+
+var CalMonthHeader = Class.create({
+
+  initialize: function(date, pagerCallback) {
+    this.pageDate = date;
+    this.pagerCallback = pagerCallback;
+  },
+
+  toElement: function() {
+    var tr = document.createElement('tr');
+
+    this.createLeftPager(tr);
+
+    var month = $(document.createElement('th'));
+    month.colSpan = 5;
+    tr.insert(month);
+    month.insert(this.pageDate.getMonthName() + ' ' + this.pageDate.getFullYear());
+    
+    this.createRightPager(tr);
+
+    return tr;
+  },
+
+  createLeftPager: function(tr) {
+    this.createPager(tr, '&#171;', -1);
+  },
+
+  createRightPager: function(tr) {
+    this.createPager(tr, '&#187;', 1);
+  },
+
+  createPager: function(tr, text, months) {
+    var th = $(document.createElement('th'));
+    th.addClassName('pager');
+    tr.insert(th);
+    th.insert(text);
+    th.observe('click', this.pagerCallback.curry(months));
+  }
+
+});
+
 
 var CalMonth = Class.create({
 
