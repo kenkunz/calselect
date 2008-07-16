@@ -82,6 +82,9 @@ var CalSelect = Class.create({
 
   initCalWrapper: function() {
     this.calWrapper = $(document.createElement('div'));
+    this.calWrapper.observe('calSelect:dateSelected', function(event) {
+      this.setDate(event.memo.date);
+    }.bindAsEventListener(this));
     this.calWrapper.addClassName('calendar');
     this.calWrapper.hide();
     this.dateField.insert({after: this.calWrapper});
@@ -265,7 +268,6 @@ var CalDate = Class.create({
   initialize: function(date, calPage) {
     this.date = date;
     this.calPage = calPage;
-    this.selectCallback = calPage.dateSelectCallback.curry(date);
 
     this.isOtherMonth = (date.getMonth() != calPage.monthIdx());
     this.isSelected   = (date.sameDateAs(calPage.selectedDate));
@@ -283,8 +285,12 @@ var CalDate = Class.create({
     var calCell = $(document.createElement('td'));
     this.addConditionalClasses(calCell);
     calCell.insert(this.date.getDate());
-    calCell.observe('click', this.selectCallback);
+    calCell.observe('click', this.onClick.curry(calCell, date));
     return calCell;
+  },
+
+  onClick: function(element, date) {
+    element.fire("calSelect:dateSelected", {date: date});
   }
   
 });
