@@ -1,6 +1,3 @@
-TODO:
-- for IE, are there some document.createElement calls that need to be wrapped in a $() ??
-
 CalSelect
 
 Responsibilities:

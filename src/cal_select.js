@@ -176,7 +176,7 @@ var CalMonthHeader = Class.create({
   },
 
   toElement: function() {
-    var tr = document.createElement('tr');
+    var tr = $(document.createElement('tr'));
 
     tr.insert(new CalPagerLeft());
 
@@ -222,7 +222,7 @@ var CalPagerRight = Class.create(CalPager, {
 var CalDayHeader = Class.create({
   headers: $w('S M T W T F S'),
   toElement: function() {
-    var row = document.createElement('tr')
+    var row = $(document.createElement('tr'));
     this.headers.each(function(day) {
       var cell = $(document.createElement('th'));
       row.insert(cell.insert(day));
