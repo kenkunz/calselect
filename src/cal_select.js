@@ -74,9 +74,8 @@ var CalSelect = Class.create({
 
   initCalWrapper: function() {
     this.calWrapper = $(document.createElement('div'));
-    this.calWrapper.observe('calSelect:dateSelected', function(event) {
+    this.calWrapper.observe('calSelect:dateClicked', function(event) {
       this.setDate(event.memo.date);
-      event.stop();
     }.bindAsEventListener(this));
     this.calWrapper.addClassName('calendar');
     this.calWrapper.hide();
@@ -149,10 +148,14 @@ var CalPage = Class.create({
 
   toElement: function() {
     this.calTable = $(document.createElement('table'));
+
     var tHead = $(document.createElement('thead'));
+    tHead.observe('calSelect:pagerClicked', function(event) {
+      this.advance(event.memo.advanceBy);
+    }.bindAsEventListener(this));
     this.calTable.insert(tHead);
 
-    this.calTable.tHead.insert(new CalMonthHeader(this.pageDate, this.advance.bind(this)));
+    this.calTable.tHead.insert(new CalMonthHeader(this.pageDate));
     this.calTable.tHead.insert(new CalDayHeader());
     this.calTable.insert(new CalMonth(this));
     
@@ -168,41 +171,40 @@ var CalPage = Class.create({
 
 var CalMonthHeader = Class.create({
 
-  initialize: function(date, pagerCallback) {
+  initialize: function(date) {
     this.pageDate = date;
-    this.pagerCallback = pagerCallback;
   },
 
   toElement: function() {
     var tr = document.createElement('tr');
 
-    tr.insert(new CalPagerLeft(this.pagerCallback));
+    tr.insert(new CalPagerLeft());
 
     var month = $(document.createElement('th'));
     month.colSpan = 5;
     tr.insert(month);
     month.insert(this.pageDate.getMonthName() + ' ' + this.pageDate.getFullYear());
     
-    tr.insert(new CalPagerRight(this.pagerCallback));
+    tr.insert(new CalPagerRight());
 
     return tr;
   },
 
 });
 
+// This is basically an abstract class; subclasses should define displayVal
+// and advanceBy attributes
 var CalPager = Class.create({
-
-  initialize: function(pagerCallback) {
-    this.pagerCallback = pagerCallback;
-  },
 
   toElement: function() {
     var th = $(document.createElement('th'));
     th.addClassName('pager');
     th.insert(this.displayVal);
-    th.observe('click', this.pagerCallback.curry(this.advanceBy));
+    th.observe('click', function() {
+      th.fire("calSelect:pagerClicked", {advanceBy: this.advanceBy});
+    }.bind(this));
     return th;
-  },
+  }
 
 });
 
@@ -280,12 +282,10 @@ var CalDate = Class.create({
     var calCell = $(document.createElement('td'));
     this.addConditionalClasses(calCell);
     calCell.insert(this.date.getDate());
-    calCell.observe('click', this.onClick.curry(calCell, date));
+    calCell.observe('click', function() {
+      calCell.fire("calSelect:dateClicked", {date: this.date});
+    }.bind(this));
     return calCell;
-  },
-
-  onClick: function(element, date) {
-    element.fire("calSelect:dateSelected", {date: date});
   }
   
 });
