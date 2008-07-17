@@ -32,7 +32,7 @@ var CalSelect = Class.create({
     this.dateField.select();
     var selectedDate = this.getDate();
     var pageDate = selectedDate ? selectedDate.clone() : new Date();
-    var calPage = new CalPage(pageDate, selectedDate);
+    var calPage = new CalSelect.Page(pageDate, selectedDate);
     this.calWrapper.update(calPage);
     this.setPosition();
     this.calWrapper.show();
@@ -48,6 +48,7 @@ var CalSelect = Class.create({
     this.calWrapper.hide();
   },
 
+  // TODO: refactor this out to a separate DateParse class?
   getDate: function() {
     var dateStr = $F(this.dateField);
     var dateMatch = dateStr.match(/^\s*(\d{1,2})\/(\d{1,2})\/(\d{2}(\d{2})?)\s*$/);
@@ -70,7 +71,7 @@ var CalSelect = Class.create({
 });
 CalSelect.Version = '0.1';
 
-var CalPage = Class.create({
+CalSelect.Page = Class.create({
 
   initialize: function(pageDate, selectedDate) {
     this.pageDate = pageDate.startOfMonth();
@@ -90,9 +91,9 @@ var CalPage = Class.create({
     }.bindAsEventListener(this));
     this.calTable.insert(tHead);
 
-    this.calTable.tHead.insert(new CalMonthHeader(this.pageDate));
-    this.calTable.tHead.insert(new CalDayHeader());
-    this.calTable.insert(new CalMonth(this.pageDate, this.selectedDate));
+    this.calTable.tHead.insert(new CalSelect.MonthHeader(this.pageDate));
+    this.calTable.tHead.insert(new CalSelect.DayHeaders());
+    this.calTable.insert(new CalSelect.Month(this.pageDate, this.selectedDate));
     
     return this.calTable;
   },
@@ -104,7 +105,7 @@ var CalPage = Class.create({
 
 });
 
-var CalMonthHeader = Class.create({
+CalSelect.MonthHeader = Class.create({
 
   initialize: function(date) {
     this.pageDate = date;
@@ -113,14 +114,14 @@ var CalMonthHeader = Class.create({
   toElement: function() {
     var tr = $(document.createElement('tr'));
 
-    tr.insert(new CalPagerLeft());
+    tr.insert(new CalSelect.LeftPager());
 
     var month = $(document.createElement('th'));
     month.colSpan = 5;
     tr.insert(month);
     month.insert(this.pageDate.getMonthName() + ' ' + this.pageDate.getFullYear());
     
-    tr.insert(new CalPagerRight());
+    tr.insert(new CalSelect.RightPager());
 
     return tr;
   },
@@ -129,7 +130,7 @@ var CalMonthHeader = Class.create({
 
 // This is basically an abstract class; subclasses should define displayVal
 // and advanceBy attributes
-var CalPager = Class.create({
+CalSelect.Pager = Class.create({
 
   toElement: function() {
     var th = $(document.createElement('th'));
@@ -143,22 +144,22 @@ var CalPager = Class.create({
 
 });
 
-var CalPagerLeft = Class.create(CalPager, {
+CalSelect.LeftPager = Class.create(CalSelect.Pager, {
   displayVal: '&#171;',
   advanceBy: -1
 });
 
-var CalPagerRight = Class.create(CalPager, {
+CalSelect.RightPager = Class.create(CalSelect.Pager, {
   displayVal: '&#187;',
   advanceBy: 1
 });
 
 
-var CalDayHeader = Class.create({
-  headers: $w('S M T W T F S'),
+CalSelect.DayHeaders = Class.create({
+  labels: $w('S M T W T F S'),
   toElement: function() {
     var row = $(document.createElement('tr'));
-    this.headers.each(function(day) {
+    this.labels.each(function(day) {
       var cell = $(document.createElement('th'));
       row.insert(cell.insert(day));
     });
@@ -166,7 +167,7 @@ var CalDayHeader = Class.create({
   }
 });
 
-var CalMonth = Class.create({
+CalSelect.Month = Class.create({
 
   initialize: function(pageDate, selectedDate) {
     this.pageDate = pageDate;
@@ -187,7 +188,7 @@ var CalMonth = Class.create({
         calRow = $(document.createElement('tr'));
         calBody.appendChild(calRow);
       }
-      calRow.insert(new CalDate(date, this.pageDate, this.selectedDate));
+      calRow.insert(new CalSelect.DateCell(date, this.pageDate, this.selectedDate));
     }.bind(this));
 
     return calBody;
@@ -195,7 +196,7 @@ var CalMonth = Class.create({
 
 });
 
-var CalDate = Class.create({
+CalSelect.DateCell = Class.create({
   
   initialize: function(date, pageDate, selectedDate) {
     this.date = date;

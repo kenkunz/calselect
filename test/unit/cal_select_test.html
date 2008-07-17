@@ -57,8 +57,8 @@
       today = new Date();
       lastMonth = new Date();
       lastMonth.setDate(0);
-      var calDate = new CalDate(today, lastMonth);
-      assert(calDate.toElement().hasClassName('other'));
+      var dateCell = new CalSelect.DateCell(today, lastMonth);
+      assert(dateCell.toElement().hasClassName('other'));
     }}
 
   }, "testlog");
