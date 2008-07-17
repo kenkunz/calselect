@@ -68,6 +68,7 @@ var CalSelect = Class.create({
   }
 
 });
+CalSelect.Version = '0.1';
 
 var CalPage = Class.create({
 
