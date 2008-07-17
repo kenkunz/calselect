@@ -99,7 +99,7 @@ var CalSelect = Class.create({
     this.dateField.select();
     var selectedDate = this.getDate();
     var pageDate = selectedDate ? selectedDate.clone() : new Date();
-    var calPage = new CalPage(pageDate, selectedDate, this.setDate.bind(this));
+    var calPage = new CalPage(pageDate, selectedDate);
     this.calWrapper.update(calPage);
     this.setPosition();
     this.calWrapper.show();
@@ -138,10 +138,9 @@ var CalSelect = Class.create({
 
 var CalPage = Class.create({
 
-  initialize: function(pageDate, selectedDate, dateSelectCallback) {
+  initialize: function(pageDate, selectedDate) {
     this.pageDate = pageDate.startOfMonth();
     this.selectedDate = selectedDate;
-    this.dateSelectCallback = dateSelectCallback;
   },
 
   monthIdx: function() {
