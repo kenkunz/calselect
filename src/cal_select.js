@@ -91,7 +91,7 @@ var CalPage = Class.create({
 
     this.calTable.tHead.insert(new CalMonthHeader(this.pageDate));
     this.calTable.tHead.insert(new CalDayHeader());
-    this.calTable.insert(new CalMonth(this));
+    this.calTable.insert(new CalMonth(this.pageDate, this.selectedDate));
     
     return this.calTable;
   },
@@ -167,27 +167,27 @@ var CalDayHeader = Class.create({
 
 var CalMonth = Class.create({
 
-  initialize: function(calPage) {
-    this.calPage = calPage;
+  initialize: function(pageDate, selectedDate) {
+    this.pageDate = pageDate;
+    this.selectedDate = selectedDate;
   },
 
   dateRange: function() {
-    return $R(this.calPage.pageDate.startOfMonth().startOfWeek(),
-      this.calPage.pageDate.endOfMonth().endOfWeek());
+    return $R(this.pageDate.startOfMonth().startOfWeek(),
+              this.pageDate.endOfMonth().endOfWeek());
   },
 
   toElement: function() {
     var calBody = $(document.createElement('tbody'));
     var calRow;
-    var calPage = this.calPage;
 
     this.dateRange().each(function(date) {
       if (date.getDay() == 0) {
         calRow = $(document.createElement('tr'));
         calBody.appendChild(calRow);
       }
-      calRow.insert(new CalDate(date, calPage));
-    });
+      calRow.insert(new CalDate(date, this.pageDate, this.selectedDate));
+    }.bind(this));
 
     return calBody;
   }
@@ -196,13 +196,12 @@ var CalMonth = Class.create({
 
 var CalDate = Class.create({
   
-  initialize: function(date, calPage) {
+  initialize: function(date, pageDate, selectedDate) {
     this.date = date;
-    this.calPage = calPage;
 
-    this.isOtherMonth = (date.getMonth() != calPage.monthIdx());
-    this.isSelected   = (date.sameDateAs(calPage.selectedDate));
-    this.isToday      = (this.date.isToday());
+    this.isOtherMonth = !date.sameMonthAs(pageDate);
+    this.isSelected   = date.sameDateAs(selectedDate);
+    this.isToday      = date.isToday();
   },
 
   cssClassMap: $H({isOtherMonth: 'other', isSelected: 'selected', isToday: 'today'}),

@@ -58,6 +58,12 @@ Object.extend(Date.prototype, {
     return ((other instanceof Date) && (this.toShortString() == other.toShortString()));
   },
 
+  sameMonthAs: function(other) {
+    return ((other instanceof Date) &&
+      (this.getFullYear() == other.getFullYear()) &&
+      (this.getMonth() == other.getMonth()));
+  },
+
   isToday: function() {
     return this.sameDateAs(new Date());
   }
