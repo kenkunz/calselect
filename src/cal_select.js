@@ -199,26 +199,27 @@ var CalDate = Class.create({
   initialize: function(date, pageDate, selectedDate) {
     this.date = date;
 
-    this.isOtherMonth = !date.sameMonthAs(pageDate);
-    this.isSelected   = date.sameDateAs(selectedDate);
-    this.isToday      = date.isToday();
-  },
-
-  cssClassMap: $H({isOtherMonth: 'other', isSelected: 'selected', isToday: 'today'}),
-  addConditionalClasses: function(element) {
-    this.cssClassMap.each(function(pair) {
-      if (this[pair.key]) { element.addClassName(pair.value); }
-    }.bind(this));
+    this.classNames = $H({
+      other:    !date.sameMonthAs(pageDate),
+      selected: date.sameDateAs(selectedDate),
+      today:    date.isToday()
+    });
   },
 
   toElement: function() {
     var calCell = $(document.createElement('td'));
-    this.addConditionalClasses(calCell);
+    this.addClassNames(calCell);
     calCell.insert(this.date.getDate());
     calCell.observe('click', function() {
       calCell.fire("calSelect:dateClicked", {date: this.date});
     }.bind(this));
     return calCell;
+  },
+
+  addClassNames: function(element) {
+    this.classNames.each(function(pair) {
+      if (pair.value) element.addClassName(pair.key);
+    });
   }
   
 });
