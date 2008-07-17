@@ -51,6 +51,14 @@
     testCalSelect: function() { with(this) {
       new CalSelect('date_field');
       new CalSelect('some_other_field');
+    }},
+
+    testCalDateShouldHaveCssClassOtherIfDateIsNotInMonth: function() { with(this) {
+      today = new Date();
+      lastMonth = new Date();
+      lastMonth.setDate(0);
+      var calDate = new CalDate(today, lastMonth);
+      assert(calDate.toElement().hasClassName('other'));
     }}
 
   }, "testlog");
