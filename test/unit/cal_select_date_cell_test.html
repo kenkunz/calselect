@@ -36,10 +36,9 @@
     teardown: function() { with(this) {
     }},
 
-    testCalDateShouldHaveCssClassOtherIfDateIsNotInMonth: function() { with(this) {
+    test_shouldHaveCssClassOtherIfDateIsNotInMonth: function() { with(this) {
       today = new Date();
-      lastMonth = new Date();
-      lastMonth.setDate(0);
+      lastMonth = today.clone(function(date) { date.setDate(0); });
       var dateCell = new CalSelect.DateCell(today, lastMonth);
       assert(dateCell.toElement().hasClassName('other'));
     }}
