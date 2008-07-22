@@ -36,11 +36,38 @@
     teardown: function() { with(this) {
     }},
 
-    test_shouldHaveCssClassOtherIfDateIsNotInMonth: function() { with(this) {
-      today = new Date();
-      lastMonth = today.clone(function(date) { date.setDate(0); });
-      var dateCell = new CalSelect.DateCell(today, lastMonth);
+    test_shouldHaveCssClassOtherIfNotInPageMonth: function() { with(this) {
+      date = new Date(2008, 5, 30);
+      pageMonth = new Date(2008, 5, 1);
+      dateCell = new CalSelect.DateCell(date, pageMonth);
+      assert(!dateCell.toElement().hasClassName('other'));
+
+      pageMonth = new Date(2008, 6, 1);
+      dateCell = new CalSelect.DateCell(date, pageMonth);
       assert(dateCell.toElement().hasClassName('other'));
+    }},
+
+    test_shouldHaveCssClassTodayIfToday: function() { with(this) {
+      today = new Date();
+      pageMonth = today.startOfMonth();
+      dateCell = new CalSelect.DateCell(today, pageMonth);
+      assert(dateCell.toElement().hasClassName('today'));
+
+      tomorrow = today.succ();
+      dateCell = new CalSelect.DateCell(tomorrow, pageMonth);
+      assert(!dateCell.toElement().hasClassName('today'));      
+    }},
+
+    test_shouldHaveCssClassSelectedIfSelected: function() { with(this) {
+      date = new Date(2008, 6, 4);
+      pageMonth = date.startOfMonth();
+      selected = date.clone();
+      dateCell = new CalSelect.DateCell(date, pageMonth, selected);
+      assert(dateCell.toElement().hasClassName('selected'));
+
+      selected = date.succ();
+      dateCell = new CalSelect.DateCell(date, pageMonth, selected);
+      assert(!dateCell.toElement().hasClassName('selected'));      
     }}
 
   }, "testlog");

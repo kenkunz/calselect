@@ -1,7 +1,7 @@
 Object.extend(Date.prototype, {
 
   clone: function(func) {
-    date = new Date(this);
+    var date = new Date(this);
     func && func(date);
     return date;
   },
