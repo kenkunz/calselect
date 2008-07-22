@@ -33,53 +33,49 @@
     setup: function() { with(this) {
       july1 = new Date(2008, 6, 1);
       july4 = new Date(2008, 6, 4);
-      july4dateCell = new CalSelect.DateCell(july4, july1);
+      july4cell = new CalSelect.DateCell(july4, july1);
     }},
 
     teardown: function() { with(this) {
     }},
 
     testToElement_shouldReturnTableCellElement: function() { with(this) {
-      assertEqual('TD', july4dateCell.toElement().tagName);
+      assertEqual('TD', july4cell.toElement().tagName);
     }},
 
     testToElement_shouldReturnElementWithDateValue: function() { with(this) {
-      assertEqual('4', july4dateCell.toElement().innerHTML);
+      assertEqual('4', july4cell.toElement().innerHTML);
     }},
 
-    // TODO: revise below tests - test addClassNames method instead
     test_shouldHaveCssClassOtherIfNotInPageMonth: function() { with(this) {
-      date = new Date(2008, 5, 30);
-      pageMonth = new Date(2008, 5, 1);
-      dateCell = new CalSelect.DateCell(date, pageMonth);
-      assert(!dateCell.toElement().hasClassName('other'));
+      assert(!july4cell.toElement().hasClassName('other'));
 
-      pageMonth = new Date(2008, 6, 1);
-      dateCell = new CalSelect.DateCell(date, pageMonth);
-      assert(dateCell.toElement().hasClassName('other'));
+      june1 = new Date(2008, 5, 1);
+      july4inJune = new CalSelect.DateCell(july4, june1);
+      assert(july4inJune.toElement().hasClassName('other'));
+    }},
+
+    test_shouldHaveCssClassSelectedIfSelected: function() { with(this) {
+      assert(!july4cell.toElement().hasClassName('selected'));
+
+      selected = july4.clone();
+      july4selected = new CalSelect.DateCell(july4, july1, selected);
+      assert(july4selected.toElement().hasClassName('selected'));
+
+      selected = selected.succ();
+      july4notSelected = new CalSelect.DateCell(july4, july1, selected);
+      assert(!july4notSelected.toElement().hasClassName('selected'));
     }},
 
     test_shouldHaveCssClassTodayIfToday: function() { with(this) {
       today = new Date();
-      pageMonth = today.startOfMonth();
-      dateCell = new CalSelect.DateCell(today, pageMonth);
-      assert(dateCell.toElement().hasClassName('today'));
+      thisMonth = today.startOfMonth();
+      todayCell = new CalSelect.DateCell(today, thisMonth);
+      assert(todayCell.toElement().hasClassName('today'));
 
       tomorrow = today.succ();
-      dateCell = new CalSelect.DateCell(tomorrow, pageMonth);
-      assert(!dateCell.toElement().hasClassName('today'));      
-    }},
-
-    test_shouldHaveCssClassSelectedIfSelected: function() { with(this) {
-      date = new Date(2008, 6, 4);
-      pageMonth = date.startOfMonth();
-      selected = date.clone();
-      dateCell = new CalSelect.DateCell(date, pageMonth, selected);
-      assert(dateCell.toElement().hasClassName('selected'));
-
-      selected = date.succ();
-      dateCell = new CalSelect.DateCell(date, pageMonth, selected);
-      assert(!dateCell.toElement().hasClassName('selected'));      
+      tomorrowCell = new CalSelect.DateCell(tomorrow, thisMonth);
+      assert(!tomorrowCell.toElement().hasClassName('today'));      
     }}
 
   }, "testlog");
