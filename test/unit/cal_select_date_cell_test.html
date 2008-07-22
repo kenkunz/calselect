@@ -6,6 +6,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <script src="../../lib/prototype-1.6.0.2.js" type="text/javascript"></script>
   <script src="../scriptaculous/unittest.js" type="text/javascript"></script>
+  <script src="../test_helper.js" type="text/javascript"></script>
   <script src="../../src/date_extensions.js" type="text/javascript"></script>
   <script src="../../src/cal_select.js" type="text/javascript"></script>
   <link rel="stylesheet" href="../scriptaculous/test.css" type="text/css" />
@@ -24,6 +25,14 @@
 <!-- Log output -->
 <div id="testlog"> </div>
 
+<!-- HTML fixtures -->
+<div id="fixture">
+  <table>
+    <tr id="table_row">
+    </tr>
+  </table>
+</div>
+
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
@@ -31,12 +40,15 @@
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
+      fixtureHTML = $('fixture').innerHTML;
+
       july1 = new Date(2008, 6, 1);
       july4 = new Date(2008, 6, 4);
       july4cell = new CalSelect.DateCell(july4, july1);
     }},
 
     teardown: function() { with(this) {
+      $('fixture').update(fixtureHTML);
     }},
 
     testToElement_shouldReturnTableCellElement: function() { with(this) {
@@ -76,6 +88,21 @@
       tomorrow = today.succ();
       tomorrowCell = new CalSelect.DateCell(tomorrow, thisMonth);
       assert(!tomorrowCell.toElement().hasClassName('today'));      
+    }},
+
+    test_shouldFireDateClickedOnClick: function() { with(this) {
+      tr = $('table_row');
+      dateClicked = null;
+      tr.observe('calSelect:dateClicked', function(event) {
+        dateClicked = event.memo.date;
+      }.bindAsEventListener(this));
+      dateCellElem = july4cell.toElement();
+      tr.insert(dateCellElem);
+      // drop a button into our dateCell, so we can call 'click()' on it
+      button = document.createElement('button');
+      dateCellElem.insert(button);
+      button.click();
+      assertDateEqual(july4, dateClicked);
     }}
 
   }, "testlog");
