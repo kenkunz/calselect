@@ -27,7 +27,7 @@ Object.extend(Date.prototype, {
   },
 
   setDayOfWeek: function(dayIdx) {
-    date.setDate(date.getDate() - date.getDay() + dayIdx);
+    this.setDate(this.getDate() - this.getDay() + dayIdx);
   },
 
   startOfWeek: function() {
