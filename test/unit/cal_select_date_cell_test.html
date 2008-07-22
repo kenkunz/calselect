@@ -31,11 +31,23 @@
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
+      july1 = new Date(2008, 6, 1);
+      july4 = new Date(2008, 6, 4);
+      july4dateCell = new CalSelect.DateCell(july4, july1);
     }},
 
     teardown: function() { with(this) {
     }},
 
+    testToElement_shouldReturnTableCellElement: function() { with(this) {
+      assertEqual('TD', july4dateCell.toElement().tagName);
+    }},
+
+    testToElement_shouldReturnElementWithDateValue: function() { with(this) {
+      assertEqual('4', july4dateCell.toElement().innerHTML);
+    }},
+
+    // TODO: revise below tests - test addClassNames method instead
     test_shouldHaveCssClassOtherIfNotInPageMonth: function() { with(this) {
       date = new Date(2008, 5, 30);
       pageMonth = new Date(2008, 5, 1);

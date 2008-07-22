@@ -200,12 +200,8 @@ CalSelect.DateCell = Class.create({
   
   initialize: function(date, pageDate, selectedDate) {
     this.date = date;
-
-    this.classNames = $H({
-      other:    !date.sameMonthAs(pageDate),
-      selected: date.sameDateAs(selectedDate),
-      today:    date.isToday()
-    });
+    this.pageDate = pageDate;
+    this.selectedDate = selectedDate;
   },
 
   toElement: function() {
@@ -219,8 +215,14 @@ CalSelect.DateCell = Class.create({
   },
 
   addClassNames: function(element) {
-    this.classNames.each(function(pair) {
-      if (pair.value) element.addClassName(pair.key);
+    var classNames = $H({
+      selected: this.date.sameDateAs(this.selectedDate),
+      today:    this.date.isToday(),
+      other:    !this.date.sameMonthAs(this.pageDate)
+    });
+
+    classNames.each(function(pair) {
+      pair.value && element.addClassName(pair.key);
     });
   }
   
