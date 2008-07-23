@@ -26,84 +26,82 @@
   new Test.Unit.Runner({
 
     testClone_returnsNewDateWithSameValue: function() { with(this) {
-      d1 = new Date();
-      d2 = d1.clone();
+      var d1 = new Date();
+      var d2 = d1.clone();
       assertType(Date, d2);
       assertNotIdentical(d1, d2);
       assertDateEqual(d1, d2);
     }},
 
     testClone_yieldsNewDateIntoFunctionAndReturnsIt: function() { with(this) {
-      d1 = new Date();
-      var that = this;
-      d2 = d1.clone(function(date) {
-        that.yielded = date;
-      });
+      var d1 = new Date();
+      var yielded;
+      d2 = d1.clone(function(date) { yielded = date; });
       assertIdentical(d2, yielded);
     }},
 
     testSucc_returnsTheNextDay: function() { with(this) {
-      d1 = new Date(2008, 1, 29); // 02/29/2008
-      d2 = new Date(2008, 2, 1);  // 03/01/2008
+      var d1 = new Date(2008, 1, 29); // 02/29/2008
+      var d2 = new Date(2008, 2, 1);  // 03/01/2008
       assertDateEqual(d2, d1.succ());
     }},
 
     testStartOfMonth_returnsNewDateForFirstOfMonth: function() { with(this) {
-      d1 = new Date(2008, 1, 29); // 02/29/2008
-      d2 = new Date(2008, 1, 1);  // 02/01/2008
+      var d1 = new Date(2008, 1, 29); // 02/29/2008
+      var d2 = new Date(2008, 1, 1);  // 02/01/2008
       assertDateEqual(d2, d1.startOfMonth());
     }},
 
     testEndOfMonth_returnsNewDateForLastOfMonth: function() { with(this) {
-      d1 = new Date(2008, 1, 10); // 02/10/2008
-      d2 = new Date(2008, 1, 29); // 02/29/2008
+      var d1 = new Date(2008, 1, 10); // 02/10/2008
+      var d2 = new Date(2008, 1, 29); // 02/29/2008
       assertDateEqual(d2, d1.endOfMonth());
 
-      d3 = new Date(2008, 2, 31); // 03/31/2008
+      var d3 = new Date(2008, 2, 31); // 03/31/2008
       assertDateEqual(d3, d3.endOfMonth());
     }},
 
     testStartOfWeek_returnsNewDateForSundayOfSameWeek: function() { with(this) {
-      d1 = new Date(2008, 6, 18); // 07/18/2008 (Friday)
-      d2 = new Date(2008, 6, 13); // 07/13/2008 (Sunday)
+      var d1 = new Date(2008, 6, 18); // 07/18/2008 (Friday)
+      var d2 = new Date(2008, 6, 13); // 07/13/2008 (Sunday)
       assertDateEqual(d2, d1.startOfWeek());
       assertDateEqual(d2, d2.startOfWeek());
     }},
 
     testEndOfWeek_returnsNewDateForSaturdayOfSameWeek: function() { with(this) {
-      d1 = new Date(2008, 6, 18); // 07/18/2008 (Friday)
-      d2 = new Date(2008, 6, 19); // 07/19/2008 (Saturday)
+      var d1 = new Date(2008, 6, 18); // 07/18/2008 (Friday)
+      var d2 = new Date(2008, 6, 19); // 07/19/2008 (Saturday)
       assertDateEqual(d2, d1.endOfWeek());
       assertDateEqual(d2, d2.endOfWeek());
     }},
 
     testToShortString_returnsSimpleDateFormatString: function() { with(this) {
-      d1 = new Date(2008, 6, 18);
+      var d1 = new Date(2008, 6, 18);
       assertEqual('07/18/08', d1.toShortString());
     }},
 
     testSameDateAs_returnsTrueIfSameDateRegardlessOfTime: function() { with(this) {
-      d1 = new Date(2008, 0, 1, 0); // 01/01/2008 12:00 AM
-      d2 = new Date(2008, 0, 1, 1); // 01/01/2008 01:00 AM
-      d3 = new Date(2008, 0, 2);    // 01/02/2008
+      var d1 = new Date(2008, 0, 1, 0); // 01/01/2008 12:00 AM
+      var d2 = new Date(2008, 0, 1, 1); // 01/01/2008 01:00 AM
+      var d3 = new Date(2008, 0, 2);    // 01/02/2008
       assert(d1.sameDateAs(d1));
       assert(d1.sameDateAs(d2));
       assert(!d1.sameDateAs(d3));
     }},
 
     testSameMonthAs_returnsTrueIfSameMonth: function() { with(this) {
-      d1 = new Date(2008, 0, 1);  // 01/01/2008
-      d2 = new Date(2008, 0, 10); // 01/10/2008
-      d3 = new Date(2008, 1, 1);  // 02/01/2008
+      var d1 = new Date(2008, 0, 1);  // 01/01/2008
+      var d2 = new Date(2008, 0, 10); // 01/10/2008
+      var d3 = new Date(2008, 1, 1);  // 02/01/2008
       assert(d1.sameMonthAs(d1));
       assert(d1.sameMonthAs(d2));
       assert(!d1.sameMonthAs(d3));
     }},
 
     testIsToday_returnsTrueIfToday: function() { with(this) {
-      d1 = new Date();
-      d2 = new Date(1900, 1, 1);
-      d3 = d1.succ();
+      var d1 = new Date();
+      var d2 = new Date(1900, 1, 1);
+      var d3 = d1.succ();
       assert(d1.isToday());
       assert(!d2.isToday());
       assert(!d3.isToday());

@@ -36,11 +36,11 @@
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
-      fixtureHTML = $('fixture').innerHTML;
+      this.fixtureHTML = $('fixture').innerHTML;
 
-      july1 = new Date(2008, 6, 1);
-      july4 = new Date(2008, 6, 4);
-      july4cell = new CalSelect.DateCell(july4, july1);
+      this.july1 = new Date(2008, 6, 1);
+      this.july4 = new Date(2008, 6, 4);
+      this.july4cell = new CalSelect.DateCell(july4, july1);
     }},
 
     teardown: function() { with(this) {
@@ -58,45 +58,45 @@
     test_shouldHaveCssClassOtherIfNotInPageMonth: function() { with(this) {
       assert(!july4cell.toElement().hasClassName('other'));
 
-      june1 = new Date(2008, 5, 1);
-      july4inJune = new CalSelect.DateCell(july4, june1);
+      var june1 = new Date(2008, 5, 1);
+      var july4inJune = new CalSelect.DateCell(july4, june1);
       assert(july4inJune.toElement().hasClassName('other'));
     }},
 
     test_shouldHaveCssClassSelectedIfSelected: function() { with(this) {
       assert(!july4cell.toElement().hasClassName('selected'));
 
-      selected = july4.clone();
-      july4selected = new CalSelect.DateCell(july4, july1, selected);
+      var selected = july4.clone();
+      var july4selected = new CalSelect.DateCell(july4, july1, selected);
       assert(july4selected.toElement().hasClassName('selected'));
 
       selected = selected.succ();
-      july4notSelected = new CalSelect.DateCell(july4, july1, selected);
+      var july4notSelected = new CalSelect.DateCell(july4, july1, selected);
       assert(!july4notSelected.toElement().hasClassName('selected'));
     }},
 
     test_shouldHaveCssClassTodayIfToday: function() { with(this) {
-      today = new Date();
-      thisMonth = today.startOfMonth();
-      todayCell = new CalSelect.DateCell(today, thisMonth);
+      var today = new Date();
+      var thisMonth = today.startOfMonth();
+      var todayCell = new CalSelect.DateCell(today, thisMonth);
       assert(todayCell.toElement().hasClassName('today'));
 
-      tomorrow = today.succ();
-      tomorrowCell = new CalSelect.DateCell(tomorrow, thisMonth);
+      var tomorrow = today.succ();
+      var tomorrowCell = new CalSelect.DateCell(tomorrow, thisMonth);
       assert(!tomorrowCell.toElement().hasClassName('today'));      
     }},
 
     test_shouldFireDateClickedOnClick: function() { with(this) {
-      tr = $('table_row');
-      dateClicked = null;
+      var tr = $('table_row');
+      var dateClicked = null;
       tr.observe('calSelect:dateClicked', function(event) {
         dateClicked = event.memo.date;
       }.bindAsEventListener(this));
-      dateCellElem = july4cell.toElement();
+      var dateCellElem = july4cell.toElement();
       tr.insert(dateCellElem);
       // drop a button into our dateCell, so we can call 'click()' on it
       // perhaps there's a better way to simulate a click event?
-      button = document.createElement('button');
+      var button = document.createElement('button');
       dateCellElem.insert(button);
       button.click();
       assertDateEqual(july4, dateClicked);
