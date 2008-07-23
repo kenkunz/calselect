@@ -31,15 +31,37 @@
 
   new Test.Unit.Runner({
 
-    setup: function() { with(this) {
+    testDateRange_shouldBeginOnSundayPrecedingOrEqualToFirstOfMonth: function() { with(this) {
+      var june1 = new Date(2008, 5, 1); // it's a Sunday
+      var juneCalMonth = new CalSelect.Month(june1);
+      assertDateEqual(june1, juneCalMonth.dateRange().toArray().first());
+
+      var july1  = new Date(2008, 6, 1);  // Tuesday
+      var june29 = new Date(2008, 5, 29); // preceding Sunday
+      var julyCalMonth = new CalSelect.Month(july1);
+      assertDateEqual(june29, julyCalMonth.dateRange().toArray().first());
     }},
 
-    teardown: function() { with(this) {
+    testDateRange_shouldEndOnSaturdayOnOrAfterLastOfMonth: function() { with(this) {
+      var may1  = new Date(2008, 4, 1);
+      var may31 = new Date(2008, 4, 31); // it's a Saturday
+      var mayCalMonth = new CalSelect.Month(may1);
+      assertDateEqual(may31, mayCalMonth.dateRange().toArray().last());
+
+      var june1 = new Date(2008, 5, 1);
+      var july5 = new Date(2008, 6, 5); // first Saturday after 6/30/08
+      var juneCalMonth = new CalSelect.Month(june1);
+      assertDateEqual(july5, juneCalMonth.dateRange().toArray().last());
     }},
 
-    testSomething: function() { with(this) {
-      fail();
-    }}
+    testToElement_shouldReturnTbodyWithCorrectNumberOfRowsAndCells: function() { with(this) {
+      var july1 = new Date(2008, 6, 1);
+      var calMonth = new CalSelect.Month(july1);
+      var monthElem = calMonth.toElement();
+      assertEqual('TBODY', monthElem.tagName);
+      assertEqual(5, monthElem.rows.length);
+      assertEqual(5*7, monthElem.select('td').length)
+    }},
 
   }, "testlog");
 // ]]>
