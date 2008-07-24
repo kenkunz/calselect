@@ -32,13 +32,17 @@
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
+      this.dayHeaders = new CalSelect.DayHeaders().toElement();
     }},
 
-    teardown: function() { with(this) {
+    testToElement_shouldReturnTableRow: function() { with(this) {
+      assertEqual('TR', dayHeaders.tagName);
     }},
 
-    testSomething: function() { with(this) {
-      fail();
+    testToElement_shouldReturnElementWithDayHeaderCells: function() { with(this) {
+      var expected = $w('S M T W T F S');
+      var headerLabels = $A(dayHeaders.cells).map(function(cell) { return cell.innerHTML; });
+      assertEnumEqual(expected, headerLabels)
     }}
 
   }, "testlog");
