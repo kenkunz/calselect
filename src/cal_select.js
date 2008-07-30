@@ -7,11 +7,10 @@ var CalSelect = Class.create({
   },
 
   initCalWrapper: function() {
-    this.calWrapper = $(document.createElement('div'));
+    this.calWrapper = new Element('div', { className: 'calendar' });
     this.calWrapper.observe('calSelect:dateClicked', function(event) {
       this.setDate(event.memo.date);
     }.bindAsEventListener(this));
-    this.calWrapper.addClassName('calendar');
     this.calWrapper.hide();
     this.dateField.insert({after: this.calWrapper});
   },
@@ -83,13 +82,11 @@ CalSelect.Page = Class.create({
   },
 
   toElement: function() {
-    this.calTable = $(document.createElement('table'));
+    this.calTable = new Element('table').insert(new Element('thead'));
 
-    var tHead = $(document.createElement('thead'));
-    tHead.observe('calSelect:pagerClicked', function(event) {
+    this.calTable.tHead.observe('calSelect:pagerClicked', function(event) {
       this.advance(event.memo.advanceBy);
     }.bindAsEventListener(this));
-    this.calTable.insert(tHead);
 
     this.calTable.tHead.insert(new CalSelect.MonthHeader(this.pageDate));
     this.calTable.tHead.insert(new CalSelect.DayHeaders());
@@ -112,13 +109,13 @@ CalSelect.MonthHeader = Class.create({
   },
 
   toElement: function() {
-    var tr = $(document.createElement('tr'));
+    var tr = new Element('tr');
 
     tr.insert(new CalSelect.LeftPager());
 
-    var month = $(document.createElement('th'));
-    month.colSpan = 5;
+    var month = new Element('th', { colSpan: 5 });
     tr.insert(month);
+    // push "Month YYYY" down to date?
     month.insert(this.pageDate.getMonthName() + ' ' + this.pageDate.getFullYear());
     
     tr.insert(new CalSelect.RightPager());
@@ -133,9 +130,7 @@ CalSelect.MonthHeader = Class.create({
 CalSelect.Pager = Class.create({
 
   toElement: function() {
-    var th = $(document.createElement('th'));
-    th.addClassName('pager');
-    th.insert(this.displayVal);
+    var th = new Element('th', { className: 'pager' }).insert(this.displayVal);
     th.observe('click', function() {
       th.fire("calSelect:pagerClicked", {advanceBy: this.advanceBy});
     }.bind(this));
@@ -158,12 +153,9 @@ CalSelect.RightPager = Class.create(CalSelect.Pager, {
 CalSelect.DayHeaders = Class.create({
   labels: $w('S M T W T F S'),
   toElement: function() {
-    var row = $(document.createElement('tr'));
-    this.labels.each(function(day) {
-      var cell = $(document.createElement('th'));
-      row.insert(cell.insert(day));
+    return this.labels.inject(new Element('tr'), function(row, day) {
+      return row.insert(new Element('th').insert(day));
     });
-    return row;
   }
 });
 
@@ -180,13 +172,13 @@ CalSelect.Month = Class.create({
   },
 
   toElement: function() {
-    var calBody = $(document.createElement('tbody'));
+    var calBody = new Element('tbody');
     var calRow;
 
     this.dateRange().each(function(date) {
       if (date.getDay() == 0) {
-        calRow = $(document.createElement('tr'));
-        calBody.appendChild(calRow);
+        calRow = new Element('tr');
+        calBody.insert(calRow);
       }
       calRow.insert(new CalSelect.DateCell(date, this.pageDate, this.selectedDate));
     }.bind(this));
@@ -205,7 +197,7 @@ CalSelect.DateCell = Class.create({
   },
 
   toElement: function() {
-    var calCell = $(document.createElement('td'));
+    var calCell = new Element('td');
     this.addClassNames(calCell);
     calCell.insert(this.date.getDate());
     calCell.observe('click', function() {
