@@ -128,7 +128,6 @@ CalSelect.MonthHeader = Class.create({
 // This is basically an abstract class; subclasses should define displayVal
 // and advanceBy attributes
 CalSelect.Pager = Class.create({
-
   toElement: function() {
     var th = new Element('th', { className: 'pager' }).insert(this.displayVal);
     th.observe('click', function() {
@@ -136,7 +135,6 @@ CalSelect.Pager = Class.create({
     }.bind(this));
     return th;
   }
-
 });
 
 CalSelect.LeftPager = Class.create(CalSelect.Pager, {

@@ -32,9 +32,11 @@
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
+      this.fixtureHTML = $('fixture').innerHTML;
     }},
 
     teardown: function() { with(this) {
+      $('fixture').update(fixtureHTML);
     }},
 
     testSomething: function() { with(this) {

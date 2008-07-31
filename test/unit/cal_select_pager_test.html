@@ -23,6 +23,12 @@
 
 <!-- HTML fixtures -->
 <div id="fixture">
+  <table>
+    <thead>
+      <tr id="table_row">
+      </tr>
+    </thead>
+  </table>
 </div>
 
 <!-- Tests follow -->
@@ -32,13 +38,36 @@
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
+      this.fixtureHTML = $('fixture').innerHTML;
+      this.pager = new CalSelect.LeftPager;
     }},
 
     teardown: function() { with(this) {
+      $('fixture').update(fixtureHTML);
     }},
 
-    testSomething: function() { with(this) {
-      fail();
+    testToElement_shouldReturnThElement: function() { with(this) {
+      assertEqual('TH', pager.toElement().tagName);
+    }},
+
+    testToElement_shouldReturnElementWithPagerClass: function() { with(this) {
+      assert(pager.toElement().hasClassName('pager'));
+    }},
+
+    test_shouldFirePagerClickedOnClick: function() { with(this) {
+      var tr = $('table_row');
+      var eventMemo = null;
+      tr.observe('calSelect:pagerClicked', function(event) {
+        eventMemo = event.memo;
+      }.bindAsEventListener(this));
+      var pagerElem = pager.toElement();
+      tr.insert(pagerElem);
+      // drop a button into our dateCell, so we can call 'click()' on it
+      // perhaps there's a better way to simulate a click event?
+      var button = new Element('button');
+      pagerElem.insert(button);
+      button.click();
+      assertEqual(-1, eventMemo.advanceBy);
     }}
 
   }, "testlog");
