@@ -190,30 +190,21 @@ CalSelect.DateCell = Class.create({
   
   initialize: function(date, pageDate, selectedDate) {
     this.date = date;
-    this.pageDate = pageDate;
-    this.selectedDate = selectedDate;
+
+    var classNames = [];
+    if (date.sameDateAs(selectedDate)) { classNames.push('selected') }
+    if (date.isToday())                { classNames.push('today') }
+    if (!date.sameMonthAs(pageDate))   { classNames.push('other') }
+    this.className = classNames.join(' ');
   },
 
   toElement: function() {
-    var calCell = new Element('td');
-    this.addClassNames(calCell);
+    var calCell = new Element('td', { className: this.className });
     calCell.insert(this.date.getDate());
     calCell.observe('click', function() {
       calCell.fire("calSelect:dateClicked", {date: this.date});
     }.bind(this));
     return calCell;
-  },
-
-  addClassNames: function(element) {
-    var classNames = $H({
-      selected: this.date.sameDateAs(this.selectedDate),
-      today:    this.date.isToday(),
-      other:    !this.date.sameMonthAs(this.pageDate)
-    });
-
-    classNames.each(function(pair) {
-      pair.value && element.addClassName(pair.key);
-    });
   }
   
 });
