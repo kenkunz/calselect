@@ -33,14 +33,34 @@
 
     setup: function() { with(this) {
       this.fixtureHTML = $('fixture').innerHTML;
+
+      var jan1 = new Date(2008, 0, 1);
+      this.janPage = new CalSelect.Page(jan1);
+      this.janElement = janPage.toElement();
+
+      this.feb1 = new Date(2008, 1, 1);
     }},
 
     teardown: function() { with(this) {
       $('fixture').update(fixtureHTML);
     }},
 
-    testSomething: function() { with(this) {
-      fail();
+    testToElement_returnsTableElementWithTheadAndTbody: function() { with(this) {
+      assertEqual('TABLE', janElement.tagName);
+      assertNotNull(janElement.tHead);
+      assertEqual(1, janElement.tBodies.length);
+    }},
+
+    testAdvance_setsNewPageDate: function() { with(this) {
+      janPage.advance(1);
+      assertDateEqual(feb1, janPage.pageDate);
+    }},
+
+    testAdvance_redrawsTableContents: function() { with(this) {
+      var febElement = new CalSelect.Page(feb1).toElement();
+      assertNotEqual(febElement.innerHTML, janElement.innerHTML);
+      janPage.advance(1);
+      assertEqual(febElement.innerHTML, janElement.innerHTML);
     }}
 
   }, "testlog");

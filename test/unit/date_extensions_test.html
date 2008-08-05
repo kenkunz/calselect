@@ -105,6 +105,11 @@
       assert(d1.isToday());
       assert(!d2.isToday());
       assert(!d3.isToday());
+    }},
+
+    testGetMonthYearHeader_returnsMonthSpaceYYYY: function() { with(this) {
+      var d1 = new Date(2008, 0, 1);  // 01/01/2008
+      assertEqual('January 2008', d1.getMonthYearHeader());
     }}
 
   }, "testlog");

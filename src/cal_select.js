@@ -75,30 +75,29 @@ CalSelect.Page = Class.create({
   initialize: function(pageDate, selectedDate) {
     this.pageDate = pageDate.startOfMonth();
     this.selectedDate = selectedDate;
-  },
-
-  monthIdx: function() {
-    return this.pageDate.getMonth();
+    this.calTable = new Element('table');
   },
 
   toElement: function() {
-    this.calTable = new Element('table').insert(new Element('thead'));
+    this.draw();
+    return this.calTable;
+  },
 
+  draw: function() {
+    this.calTable.update(new Element('thead'));
     this.calTable.tHead.observe('calSelect:pagerClicked', function(event) {
       this.advance(event.memo.advanceBy);
     }.bindAsEventListener(this));
 
     this.calTable.tHead.insert(new CalSelect.MonthHeader(this.pageDate));
     this.calTable.tHead.insert(new CalSelect.DayHeaders());
-    this.calTable.insert(new CalSelect.Month(this.pageDate, this.selectedDate));
-    
-    return this.calTable;
+    this.calTable.insert(new CalSelect.Month(this.pageDate, this.selectedDate));    
   },
 
   advance: function(months) {
     this.pageDate.setMonth(this.pageDate.getMonth() + months);
-    this.calTable.replace(this);
-  },
+    this.draw();
+  }
 
 });
 
@@ -110,18 +109,17 @@ CalSelect.MonthHeader = Class.create({
 
   toElement: function() {
     var tr = new Element('tr');
-
     tr.insert(new CalSelect.LeftPager());
-
-    var month = new Element('th', { colSpan: 5 });
-    tr.insert(month);
-    // push "Month YYYY" down to date?
-    month.insert(this.pageDate.getMonthName() + ' ' + this.pageDate.getFullYear());
-    
+    tr.insert(this.monthYearHeader());
     tr.insert(new CalSelect.RightPager());
-
     return tr;
   },
+
+  monthYearHeader: function() {
+    var month = new Element('th', { colSpan: 5 });
+    month.insert(this.pageDate.getMonthYearHeader());
+    return month;
+  }
 
 });
 
@@ -136,12 +134,10 @@ CalSelect.Pager = Class.create({
     return th;
   }
 });
-
 CalSelect.LeftPager = Class.create(CalSelect.Pager, {
   displayVal: '&#171;',
   advanceBy: -1
 });
-
 CalSelect.RightPager = Class.create(CalSelect.Pager, {
   displayVal: '&#187;',
   advanceBy: 1

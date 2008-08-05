@@ -21,6 +21,10 @@
 <!-- Log output -->
 <div id="testlog"> </div>
 
+<!-- HTML fixtures -->
+<div id="fixture">
+</div>
+
 <!-- Tests follow -->
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
@@ -28,13 +32,22 @@
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
+      this.fixtureHTML = $('fixture').innerHTML;
+      this.monthHeader = new CalSelect.MonthHeader(new Date(2008, 0, 1));
     }},
 
     teardown: function() { with(this) {
+      $('fixture').update(fixtureHTML);
     }},
 
-    testSomething: function() { with(this) {
-      fail();
+    testToElement_returnsTableRow: function() { with(this) {
+      assertEqual('TR', monthHeader.toElement().tagName);
+    }},
+
+    testToElement_returnsElementWithCorrectCells: function() { with(this) {
+      assertEqual(3, monthHeader.toElement().select('th').length);
+      assertEqual(2, monthHeader.toElement().select('th.pager').length);
+      assertEqual(1, monthHeader.toElement().select('th[colspan="5"]').length);
     }}
 
   }, "testlog");

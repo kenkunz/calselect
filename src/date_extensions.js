@@ -47,6 +47,10 @@ Object.extend(Date.prototype, {
     return this.monthNames[this.getMonth()];
   },
 
+  getMonthYearHeader: function() {
+    return this.getMonthName() + ' ' + this.getFullYear();
+  },
+
   toShortString: function() {
     var dd = this.getDate().toPaddedString(2);
     var mm = (this.getMonth() + 1).toPaddedString(2);
