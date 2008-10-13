@@ -62,11 +62,7 @@
       }.bindAsEventListener(this));
       var pagerElem = pager.toElement();
       tr.insert(pagerElem);
-      // drop a button into our dateCell, so we can call 'click()' on it
-      // perhaps there's a better way to simulate a click event?
-      var button = new Element('button');
-      pagerElem.insert(button);
-      button.click();
+      Event.simulateMouse(pagerElem, 'click');
       assertEqual(-1, eventMemo.advanceBy);
     }}
 

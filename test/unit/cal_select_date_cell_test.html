@@ -94,11 +94,7 @@
       }.bindAsEventListener(this));
       var dateCellElem = july4cell.toElement();
       tr.insert(dateCellElem);
-      // drop a button into our dateCell, so we can call 'click()' on it
-      // perhaps there's a better way to simulate a click event?
-      var button = new Element('button');
-      dateCellElem.insert(button);
-      button.click();
+      Event.simulateMouse(dateCellElem, 'click');
       assertDateEqual(july4, dateClicked);
     }}
 
