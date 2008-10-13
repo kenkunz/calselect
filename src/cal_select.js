@@ -47,7 +47,6 @@ var CalSelect = Class.create({
     this.calWrapper.hide();
   },
 
-  // TODO: refactor this out to a separate DateParse class?
   getDate: function() {
     var dateStr = $F(this.dateField);
     var dateMatch = dateStr.match(/^\s*(\d{1,2})\/(\d{1,2})\/(\d{2}(\d{2})?)\s*$/);
