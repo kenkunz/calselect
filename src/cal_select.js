@@ -3,7 +3,8 @@ var CalSelect = Class.create({
   initialize: function(dateField) {
     this.dateField = $(dateField);
     this.insertCalendar();
-    this.registerObservers();
+    this.registerFieldObservers();
+    this.documentClickHandler = this._documentClickHandler.bindAsEventListener(this);
   },
 
   insertCalendar: function() {
@@ -15,32 +16,28 @@ var CalSelect = Class.create({
     this.dateField.insert({after: this.calendar});
   },
 
-  registerObservers: function() {
+  registerFieldObservers: function() {
     this.dateField.observe('focus', this.show.bind(this));
     this.dateField.observe('keydown', function(event) {
       if (event.keyCode == Event.KEY_TAB) { this.hide(); }
     }.bindAsEventListener(this));
-
-    // TODO: this works, but perhaps we should only observe on show and stop on hide
-    document.observe('click', function(event) {
-      var element = event.element();
-      if (element != this.dateField && !element.descendantOf(this.calendar)) {
-        this.hide();
-      }
-    }.bindAsEventListener(this));
   },
 
   show: function() {
-    this.dateField.select();
-    var selectedDate = this.getDate();
-    var pageDate = selectedDate ? selectedDate.clone() : new Date();
-    var calPage = new CalSelect.Page(pageDate, selectedDate);
-    this.calendar.update(calPage);
-    this.setPosition();
-    this.calendar.show();
+    if (!this.calendar.visible()) {
+      this.dateField.select();
+      var selectedDate = this.getDate();
+      var pageDate = selectedDate ? selectedDate.clone() : new Date();
+      var calPage = new CalSelect.Page(pageDate, selectedDate);
+      this.calendar.update(calPage);
+      this.setPosition();
+      document.observe('click', this.documentClickHandler);
+      this.calendar.show();
+    }
   },
 
   hide: function() {
+    document.stopObserving('click', this.documentClickHandler);
     this.calendar.hide();
   },
 
@@ -48,6 +45,13 @@ var CalSelect = Class.create({
     var offset = this.dateField.positionedOffset();
     offset.top += this.dateField.getHeight();
     this.calendar.setStyle({left: offset.left+'px', top: offset.top+'px'});    
+  },
+
+  _documentClickHandler: function(event) {
+    var element = event.element();
+    if (element != this.dateField && !element.descendantOf(this.calendar)) {
+      this.hide();
+    }
   },
 
   getDate: function() {
