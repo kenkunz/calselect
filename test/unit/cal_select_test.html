@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="../../src/cal_select.css" type="text/css" />
   <style type="text/css" media="screen">
     #fixture { margin-top: 1em; border-top: 1px solid #666; }
-    #fixture input { border: 1px solid #999; width: 7em; }
+    #fixture label { float: left; width: 8em; padding-top: 6px; }
+    #fixture input { border: 1px solid #999; width: 7em; margin-right: 1ex; }
   </style>
 </head>
 <body>
@@ -27,12 +28,14 @@
 <!-- HTML fixtures -->
 <div id="fixture">
   <p>
-    Here is a date field:
+    <label for="date_field">Date field:</label>
     <input type="text" id="date_field" />
+    <button onClick="new CalSelect('date_field');this.disabled=true;">enable</button>
   </p>
   <p>
-    And here is some other field:
+    <label for="some_other_field">Some other field:</label>
     <input type="text" id="some_other_field" />
+    <button onClick="new CalSelect('some_other_field');this.disabled=true;">enable</button>
   </p>
 </div>
 
@@ -47,13 +50,15 @@
     }},
 
     teardown: function() { with(this) {
-      // $('fixture').update(fixtureHTML);
+      $('fixture').update(fixtureHTML);
     }},
 
-    testCalSelect: function() { with(this) {
+    testInitializeInsertsHiddenCalendarElement: function() { with(this) {
       new CalSelect('date_field');
-      new CalSelect('some_other_field');
-      fail();
+      var calElement = $('date_field').nextSibling;
+      assertEqual('DIV', calElement.tagName);
+      assert(calElement.hasClassName('calendar'));
+      assertHidden(calElement);
     }}
 
   }, "testlog");
