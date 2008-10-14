@@ -2,20 +2,20 @@ var CalSelect = Class.create({
 
   initialize: function(dateField) {
     this.dateField = $(dateField);
-    this.initCalWrapper();
-    this.initObservers();
+    this.insertCalendar();
+    this.registerObservers();
   },
 
-  initCalWrapper: function() {
-    this.calWrapper = new Element('div', { className: 'calendar' });
-    this.calWrapper.observe('calSelect:dateClicked', function(event) {
+  insertCalendar: function() {
+    this.calendar = new Element('div', { className: 'calendar' });
+    this.calendar.observe('calSelect:dateClicked', function(event) {
       this.setDate(event.memo.date);
     }.bindAsEventListener(this));
-    this.calWrapper.hide();
-    this.dateField.insert({after: this.calWrapper});
+    this.calendar.hide();
+    this.dateField.insert({after: this.calendar});
   },
 
-  initObservers: function() {
+  registerObservers: function() {
     this.dateField.observe('focus', this.show.bind(this));
     this.dateField.observe('keydown', function(event) {
       if (event.keyCode == Event.KEY_TAB) { this.hide(); }
@@ -24,7 +24,7 @@ var CalSelect = Class.create({
     document.observe('click', this.hide.bind(this));
 
     this.dateField.observe('click', Event.stop);
-    this.calWrapper.observe('click', Event.stop);
+    this.calendar.observe('click', Event.stop);
   },
 
   show: function() {
@@ -32,19 +32,19 @@ var CalSelect = Class.create({
     var selectedDate = this.getDate();
     var pageDate = selectedDate ? selectedDate.clone() : new Date();
     var calPage = new CalSelect.Page(pageDate, selectedDate);
-    this.calWrapper.update(calPage);
+    this.calendar.update(calPage);
     this.setPosition();
-    this.calWrapper.show();
+    this.calendar.show();
+  },
+
+  hide: function() {
+    this.calendar.hide();
   },
 
   setPosition: function() {
     var offset = this.dateField.positionedOffset();
     offset.top += this.dateField.getHeight();
-    this.calWrapper.setStyle({left: offset.left+'px', top: offset.top+'px'});    
-  },
-
-  hide: function() {
-    this.calWrapper.hide();
+    this.calendar.setStyle({left: offset.left+'px', top: offset.top+'px'});    
   },
 
   getDate: function() {
