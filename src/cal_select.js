@@ -21,10 +21,13 @@ var CalSelect = Class.create({
       if (event.keyCode == Event.KEY_TAB) { this.hide(); }
     }.bindAsEventListener(this));
 
-    document.observe('click', this.hide.bind(this));
-
-    this.dateField.observe('click', Event.stop);
-    this.calendar.observe('click', Event.stop);
+    // TODO: this works, but perhaps we should only observe on show and stop on hide
+    document.observe('click', function(event) {
+      var element = event.element();
+      if (element != this.dateField && !element.descendantOf(this.calendar)) {
+        this.hide();
+      }
+    }.bindAsEventListener(this));
   },
 
   show: function() {
