@@ -6,6 +6,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <script src="../../lib/prototype-1.6.0.2.js" type="text/javascript"></script>
   <script src="../scriptaculous/unittest.js" type="text/javascript"></script>
+  <script src="../test_helper.js" type="text/javascript"></script>
   <script src="../../src/date_extensions.js" type="text/javascript"></script>
   <script src="../../src/cal_select.js" type="text/javascript"></script>
   <link rel="stylesheet" href="../scriptaculous/test.css" type="text/css" />
@@ -43,6 +44,13 @@
 <script type="text/javascript" language="javascript" charset="utf-8">
 // <![CDATA[
 
+  var MockCalSelect = Class.create(CalSelect, {
+    visible: false,
+    show: function() { this.visible = true; },
+    hide: function() { this.visible = false; },
+    setDate: function(date) { this.date = date; }
+  });
+
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
@@ -53,12 +61,33 @@
       $('fixture').update(fixtureHTML);
     }},
 
-    testInitializeInsertsHiddenCalendarElement: function() { with(this) {
-      new CalSelect('date_field');
+    testNewCalSelect_shouldInsertCalendarElement: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
       var calElement = $('date_field').nextSibling;
       assertEqual('DIV', calElement.tagName);
       assert(calElement.hasClassName('calendar'));
       assertHidden(calElement);
+      assertEqual(calElement, calSelect.calendar);
+    }},
+
+    testNewCalSelect_shouldSetDateOnDateClicked: function() { with(this) {
+      var mockCalSelect = new MockCalSelect('date_field');
+
+      var selectedDate = new Date('10/31/2008')
+
+      assertNull(mockCalSelect.date);
+      mockCalSelect.calendar.fire('calSelect:dateClicked', { date: selectedDate });
+      assertDateEqual(selectedDate, mockCalSelect.date);
+    }},
+
+    testNewCalSelect_shouldRegisterFieldObservers: function() { with(this) {
+      var mockCalSelect = new MockCalSelect('date_field');
+
+      assert(!mockCalSelect.visible);
+      $('date_field').focus();
+      assert(mockCalSelect.visible);
+      Event.simulateKey('date_field', 'keydown', { keyCode: Event.KEY_TAB });
+      assert(!mockCalSelect.visible);
     }}
 
   }, "testlog");
