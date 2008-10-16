@@ -81,8 +81,8 @@ f<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     }},
 
     testSameDateAs_returnsTrueIfSameDateRegardlessOfTime: function() { with(this) {
-      var d1 = new Date('01/01/2008'); // 12:00 AM
-      var d2 = new Date('01/01/2008'); // 01:00 AM
+      var d1 = new Date('01/01/2008 00:00');
+      var d2 = new Date('01/01/2008 01:00');
       var d3 = new Date('01/02/2008');
       assert(d1.sameDateAs(d1));
       assert(d1.sameDateAs(d2));
