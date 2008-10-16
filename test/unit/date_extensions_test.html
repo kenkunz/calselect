@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+f<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -41,58 +41,58 @@
     }},
 
     testSucc_returnsTheNextDay: function() { with(this) {
-      var d1 = new Date(2008, 1, 29); // 02/29/2008
-      var d2 = new Date(2008, 2, 1);  // 03/01/2008
+      var d1 = new Date('02/29/2008');
+      var d2 = new Date('03/01/2008');
       assertDateEqual(d2, d1.succ());
     }},
 
     testStartOfMonth_returnsNewDateForFirstOfMonth: function() { with(this) {
-      var d1 = new Date(2008, 1, 29); // 02/29/2008
-      var d2 = new Date(2008, 1, 1);  // 02/01/2008
+      var d1 = new Date('02/29/2008');
+      var d2 = new Date('02/01/2008');
       assertDateEqual(d2, d1.startOfMonth());
     }},
 
     testEndOfMonth_returnsNewDateForLastOfMonth: function() { with(this) {
-      var d1 = new Date(2008, 1, 10); // 02/10/2008
-      var d2 = new Date(2008, 1, 29); // 02/29/2008
+      var d1 = new Date('02/10/2008');
+      var d2 = new Date('02/29/2008');
       assertDateEqual(d2, d1.endOfMonth());
 
-      var d3 = new Date(2008, 2, 31); // 03/31/2008
+      var d3 = new Date('03/31/2008');
       assertDateEqual(d3, d3.endOfMonth());
     }},
 
     testStartOfWeek_returnsNewDateForSundayOfSameWeek: function() { with(this) {
-      var d1 = new Date(2008, 6, 18); // 07/18/2008 (Friday)
-      var d2 = new Date(2008, 6, 13); // 07/13/2008 (Sunday)
+      var d1 = new Date('07/18/2008'); // Friday
+      var d2 = new Date('07/13/2008'); // Sunday
       assertDateEqual(d2, d1.startOfWeek());
       assertDateEqual(d2, d2.startOfWeek());
     }},
 
     testEndOfWeek_returnsNewDateForSaturdayOfSameWeek: function() { with(this) {
-      var d1 = new Date(2008, 6, 18); // 07/18/2008 (Friday)
-      var d2 = new Date(2008, 6, 19); // 07/19/2008 (Saturday)
+      var d1 = new Date('07/18/2008'); // Friday
+      var d2 = new Date('07/19/2008'); // Saturday
       assertDateEqual(d2, d1.endOfWeek());
       assertDateEqual(d2, d2.endOfWeek());
     }},
 
     testToShortString_returnsSimpleDateFormatString: function() { with(this) {
-      var d1 = new Date(2008, 6, 18);
+      var d1 = new Date('07/18/2008');
       assertEqual('07/18/08', d1.toShortString());
     }},
 
     testSameDateAs_returnsTrueIfSameDateRegardlessOfTime: function() { with(this) {
-      var d1 = new Date(2008, 0, 1, 0); // 01/01/2008 12:00 AM
-      var d2 = new Date(2008, 0, 1, 1); // 01/01/2008 01:00 AM
-      var d3 = new Date(2008, 0, 2);    // 01/02/2008
+      var d1 = new Date('01/01/2008'); // 12:00 AM
+      var d2 = new Date('01/01/2008'); // 01:00 AM
+      var d3 = new Date('01/02/2008');
       assert(d1.sameDateAs(d1));
       assert(d1.sameDateAs(d2));
       assert(!d1.sameDateAs(d3));
     }},
 
     testSameMonthAs_returnsTrueIfSameMonth: function() { with(this) {
-      var d1 = new Date(2008, 0, 1);  // 01/01/2008
-      var d2 = new Date(2008, 0, 10); // 01/10/2008
-      var d3 = new Date(2008, 1, 1);  // 02/01/2008
+      var d1 = new Date('01/01/2008');
+      var d2 = new Date('01/10/2008');
+      var d3 = new Date('02/01/2008');
       assert(d1.sameMonthAs(d1));
       assert(d1.sameMonthAs(d2));
       assert(!d1.sameMonthAs(d3));
@@ -100,7 +100,7 @@
 
     testIsToday_returnsTrueIfToday: function() { with(this) {
       var d1 = new Date();
-      var d2 = new Date(1900, 1, 1);
+      var d2 = new Date('02/01/1900');
       var d3 = d1.succ();
       assert(d1.isToday());
       assert(!d2.isToday());
@@ -108,7 +108,7 @@
     }},
 
     testGetMonthYearHeader_returnsMonthSpaceYYYY: function() { with(this) {
-      var d1 = new Date(2008, 0, 1);  // 01/01/2008
+      var d1 = new Date('01/01/2008');
       assertEqual('January 2008', d1.getMonthYearHeader());
     }}
 
