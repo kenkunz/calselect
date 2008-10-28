@@ -1,3 +1,24 @@
+// Class methods
+Object.extend(Date, {
+
+  today: function() {
+    return new Date().startOfDay();
+  },
+
+  // expects date in MM/DD/YY or MM/DD/YYYY format; if year is given as YY,
+  // sets full year to year within ±50 years of today
+  smartParse: function(dateStr) {
+    var dateMatch = dateStr.match(/^\s*\d{1,2}\/\d{1,2}\/(\d{2,4})\s*$/);
+    if (dateMatch) {
+      date = new Date(dateStr);
+      if (dateMatch[1].length < 3) { date._setCorrectYear(); }
+      return date;
+    }
+  },
+
+});
+
+// Instance methods
 Object.extend(Date.prototype, {
 
   clone: function(func) {
@@ -42,6 +63,10 @@ Object.extend(Date.prototype, {
     });
   },
 
+  startOfDay: function() {
+    return new Date(this.getFullYear(), this.getMonth(), this.getDate());
+  },
+
   monthNames: $w('January February March April May June July August September October November December'),
   getMonthName: function() {
     return this.monthNames[this.getMonth()];
@@ -49,6 +74,15 @@ Object.extend(Date.prototype, {
 
   getMonthYearHeader: function() {
     return this.getMonthName() + ' ' + this.getFullYear();
+  },
+
+  getCentury: function() {
+    return (this.getFullYear() / 100).floor();
+  },
+
+  setCentury: function(century) {
+    var yearOfCentury = this.getFullYear() % 100;
+    return this.setFullYear(century * 100 + yearOfCentury);
   },
 
   toShortString: function() {
@@ -70,6 +104,28 @@ Object.extend(Date.prototype, {
 
   isToday: function() {
     return this.sameDateAs(new Date());
-  }
+  },
 
+  advanceYearBy: function(years) {
+    return this.setFullYear(this.getFullYear() + years);
+  },
+
+  advanceCenturyBy: function(centuries) {
+    return this.setCentury(this.getCentury() + centuries);
+  },
+
+  // internal method used by Date.smartParse
+  // sets full year to year within ±50 years of today
+  _setCorrectYear: function() {
+    var today = Date.today();
+    var upperDate = today.clone(function(d) { d.advanceYearBy(50); });
+    var lowerDate = today.clone(function(d) { d.advanceYearBy(-50); });
+
+    this.setCentury(today.getCentury());
+    if (this > upperDate)
+      this.advanceCenturyBy(-1);
+    else if (this <= lowerDate)
+      this.advanceCenturyBy(1);
+  }
+  
 });

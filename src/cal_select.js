@@ -56,16 +56,7 @@ var CalSelect = Class.create({
 
   getDate: function() {
     var dateStr = $F(this.dateField);
-    var dateMatch = dateStr.match(/^\s*(\d{1,2})\/(\d{1,2})\/(\d{2}(\d{2})?)\s*$/);
-    if (dateMatch) {
-      var month = dateMatch[1] - 1;
-      var day   = dateMatch[2];
-      var year  = dateMatch[3];
-      if (!dateMatch[4]) { year = '20' + year; }
-      return new Date(year, month, day);
-    } else {
-      return null;
-    }
+    return Date.smartParse(dateStr);
   },
 
   setDate: function(date) {

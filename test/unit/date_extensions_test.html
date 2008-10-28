@@ -75,6 +75,12 @@ f<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       assertDateEqual(d2, d2.endOfWeek());
     }},
 
+    testStartOfDay_returnsNewDateForMidnightOfSameDay: function() { with(this) {
+      var d1 = new Date('01/01/2008 01:01:01');
+      var d2 = new Date('01/01/2008');
+      assertDateEqual(d2, d1.startOfDay());
+    }},
+
     testToShortString_returnsSimpleDateFormatString: function() { with(this) {
       var d1 = new Date('07/18/2008');
       assertEqual('07/18/08', d1.toShortString());
@@ -110,6 +116,39 @@ f<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     testGetMonthYearHeader_returnsMonthSpaceYYYY: function() { with(this) {
       var d1 = new Date('01/01/2008');
       assertEqual('January 2008', d1.getMonthYearHeader());
+    }},
+
+    testGetCentury_returnsCentury: function() { with(this) {
+      assertEqual(20, new Date('01/01/2001').getCentury());
+      assertEqual(21, new Date('01/01/2199').getCentury());
+    }},
+
+    testToday_returnsMidnightToday: function() { with(this) {
+      assertDateEqual(new Date().startOfDay(), Date.today());
+    }},
+
+    testSetCentury: function() { with(this) {
+      var d1 = new Date('01/01/2008');
+      var expected = new Date('01/01/2208');
+      assertDateEqual(expected, d1.setCentury(22));
+    }},
+
+    testAdvanceYearBy_setsCorrectYear: function() { with(this) {
+      var d1 = new Date('05/15/2008').advanceYearBy(125);
+      assertDateEqual(new Date('05/15/2133'), d1);
+      var d2 = new Date('05/15/2008').advanceYearBy(-57);
+      assertDateEqual(new Date('05/15/1951'), d2);
+    }},
+
+    testAdvanceCenturyBy_setsCorrectCentury: function() { with(this) {
+      var d1 = new Date('05/15/2008').advanceCenturyBy(1);
+      assertDateEqual(new Date('05/15/2108'), d1);
+      var d2 = new Date('05/15/2008').advanceCenturyBy(-2);
+      assertDateEqual(new Date('05/15/1808'), d2);
+    }},
+
+    testSmartParse: function() { with(this) {
+      fail('yo, test needed here!');
     }}
 
   }, "testlog");
