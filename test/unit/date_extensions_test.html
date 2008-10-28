@@ -147,8 +147,39 @@ f<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       assertDateEqual(new Date('05/15/1808'), d2);
     }},
 
-    testSmartParse: function() { with(this) {
-      fail('yo, test needed here!');
+    testSmartParse_returnsNullIfNotParsable: function() { with(this) {
+      assertNull(Date.smartParse(''));
+      assertNull(Date.smartParse('foo'));
+      assertNull(Date.smartParse('01.01.2001'));
+      assertNull(Date.smartParse('2008-01-10'));
+      assertNull(Date.smartParse('10/01'));
+    }},
+
+    testSmartParse_keepsSpecifiedDateIfFullYearIncluded: function() { with(this) {
+      var fourth = new Date(1776, 6, 4);
+      assertDateEqual(fourth, Date.smartParse('7/4/1776'));
+      assertDateEqual(fourth, Date.smartParse('07/04/1776'));
+    }},
+
+    testSmartParse_setsFutureYearIfNoMoreThanFiftyYearsAhead: function() { with(this) {
+      var originalToday = Date.today;
+      Date.today = function() { return new Date('10/10/2008'); }
+
+      assertDateEqual(new Date('10/01/2058'), Date.smartParse('10/01/58'));
+      assertDateEqual(new Date('10/10/2058'), Date.smartParse('10/10/58'));
+      assertDateEqual(new Date('10/11/1958'), Date.smartParse('10/11/58'));
+
+      Date.today = originalToday;
+    }},
+
+    testSmartParse_setsPastYearIfLessThanFiftyYearsBehind: function() { with(this) {
+      var originalToday = Date.today;
+      Date.today = function() { return new Date('10/10/2065'); }
+
+      assertDateEqual(new Date('10/15/2015'), Date.smartParse('10/15/15'));
+      assertDateEqual(new Date('10/10/2115'), Date.smartParse('10/10/15'));
+
+      Date.today = originalToday;
     }}
 
   }, "testlog");
