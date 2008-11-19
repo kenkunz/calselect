@@ -51,6 +51,22 @@
     setDate: function(date) { this.date = date; }
   });
 
+  // stub out CalSelect.Page for less coupled testing
+  CalSelect.Page = Class.create({
+    initialize: function(pageDate, selectedDate) {
+      this.pageDate = pageDate;
+      this.selectedDate = selectedDate;
+    },
+    toElement: function() {
+      var elem = new Element('ul');
+      $w('pageDate selectedDate').each(function(attr) {
+         var value = this[attr] && this[attr].toShortString();
+         elem.insert(new Element('li', {className: attr}).update(value));
+      }.bind(this));
+      return elem;
+    }
+  });
+
   new Test.Unit.Runner({
 
     setup: function() { with(this) {
@@ -91,8 +107,47 @@
       assert(!mockCalSelect.visible);
     }},
 
-    testShow_shouldDoStuff: function() { with(this) {
-      fail();
+    testShow_shouldShowCalendarElement: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      assertHidden(calSelect.calendar);
+      calSelect.show();
+      assertVisible(calSelect.calendar);
+    }},
+
+    testShow_shouldInsertCalPage: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      assertNull(calSelect.calendar.down());
+      calSelect.show();
+      assertNotNull(calSelect.calendar.down());
+    }},
+
+    testShowWithBlankDateField_shouldInsertCalPageWithTodayAsPageDate: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      calSelect.show();
+      var elem = calSelect.calendar.down('.pageDate');
+      assertNotNull(elem);
+      assertEqual(Date.today().toShortString(), elem.innerHTML);
+    }},
+
+    testShowWithBlankDateField_shouldInsertCalPageWithNoSelectedDate: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      calSelect.show();
+      var elem = calSelect.calendar.down('.selectedDate');
+      assertNotNull(elem);
+      assertEqual('', elem.innerHTML);
+    }},
+
+    testShowWithValidDateField_shouldInsertCalPageWithCorrectDates: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      $('date_field').value = '07/04/09';
+      calSelect.show();
+      var elem = calSelect.calendar.down('.pageDate');
+      assertNotNull(elem);
+      assertEqual('07/04/09', elem.innerHTML);
+
+      var elem = calSelect.calendar.down('.selectedDate');
+      assertNotNull(elem);
+      assertEqual('07/04/09', elem.innerHTML);
     }},
 
     testHide_shouldDoStuff: function() { with(this) {
