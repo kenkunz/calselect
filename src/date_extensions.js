@@ -8,10 +8,10 @@ Object.extend(Date, {
   // expects date in MM/DD/YY or MM/DD/YYYY format; if year is given as YY,
   // sets full year to year within ±50 years of today
   smartParse: function(dateStr) {
-    var dateMatch = dateStr.match(/^\s*\d{1,2}\/\d{1,2}\/(\d{2,4})\s*$/);
+    var dateMatch = dateStr.match(/^\s*\d{1,2}\/\d{1,2}\/\d{2}(\d{1,2})?\s*$/);
     if (dateMatch) {
       date = new Date(dateStr);
-      if (dateMatch[1].length < 3) { date._setCorrectYear(); }
+      dateMatch[1] || date._setCorrectYear();
       return date;
     }
   },
