@@ -171,8 +171,11 @@
       assertEqual(1, calSelect.documentEvents.length);      
     }},
 
-    testHide_shouldDoStuff: function() { with(this) {
-      fail();
+    testHide_shouldHideCalendarElement: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      calSelect.calendar.show();
+      calSelect.hide();
+      assertHidden(calSelect.calendar);
     }},
 
     testGetDate_shouldDoStuff: function() { with(this) {
