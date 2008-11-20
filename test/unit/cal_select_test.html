@@ -178,8 +178,11 @@
       assertHidden(calSelect.calendar);
     }},
 
-    testGetDate_shouldDoStuff: function() { with(this) {
-      fail();
+    testGetDate_shouldReturnSmartParsedValueFromDateField: function() { with(this) {
+      Date.smartParse = function(str) { return 'smartParsed '+str; }
+      var calSelect = new CalSelect('date_field');
+      $('date_field').value = 'shinanza!';
+      assertEqual('smartParsed shinanza!', calSelect.getDate());
     }},
 
     testSetDate_shouldDoStuff: function() { with(this) {
