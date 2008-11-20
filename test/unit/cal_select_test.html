@@ -102,7 +102,7 @@
       assert(!mockCalSelect.visible);
       $('date_field').focus();
       assert(mockCalSelect.visible);
-      // FIXME: below seems to work in Firefox only
+      // FIXME: below only works in Firefox
       Event.simulateKey('date_field', 'keydown', { keyCode: Event.KEY_TAB });
       assert(!mockCalSelect.visible);
     }},
@@ -148,6 +148,27 @@
       var elem = calSelect.calendar.down('.selectedDate');
       assertNotNull(elem);
       assertEqual('07/04/09', elem.innerHTML);
+    }},
+
+    testShowAndHide_shouldBindAndUnBindDocumentClickHandler: function() { with(this) {
+      // TODO: need a better way to mock _documentClickHandler to test this...
+      var calSelect = new CalSelect('date_field');
+      calSelect.documentEvents = [];
+      calSelect.documentClickHandler = function(evt) {
+        calSelect.documentEvents.push(evt);
+      }
+
+      // FIXME: below only works in Firefox
+      Event.simulateMouse(document.body, 'click');
+      assertEqual(0, calSelect.documentEvents.length);
+
+      calSelect.show();
+      Event.simulateMouse(document.body, 'click');
+      assertEqual(1, calSelect.documentEvents.length);
+
+      calSelect.hide();
+      Event.simulateMouse(document.body, 'click');
+      assertEqual(1, calSelect.documentEvents.length);      
     }},
 
     testHide_shouldDoStuff: function() { with(this) {
