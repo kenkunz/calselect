@@ -1,0 +1,23 @@
+extract to CalSelect.Base:
+
+- hmm...
+
+
+CalSelect responsibilities:
+
+- takes date field as arg
+- adds observers to date field (focus, pseudo-blur)
+- inserts calendar, binds date:clicked observer
+- shows calendar (update with CalPage), binds listener to document click
+- hides
+- gets/sets date from field
+
+
+CalSelect.RangeSelector responsibilities:
+
+- take two date fields as args
+- add observers to date fields ?
+- insert range wrapper element, bind observer to 'close' button
+- shows calendar (update w/ 2 CalPage instances), bind listener to document click
+- hides
+- gets/sets dates?
