@@ -12,9 +12,8 @@
   <link rel="stylesheet" href="../scriptaculous/test.css" type="text/css" />
   <link rel="stylesheet" href="../../src/cal_select.css" type="text/css" />
   <style type="text/css" media="screen">
-    #fixture { margin-top: 1em; border-top: 1px solid #666; }
-    #fixture label { float: left; width: 8em; padding-top: 6px; }
-    #fixture input { border: 1px solid #999; width: 7em; margin-right: 1ex; }
+    #fixture { margin-top: 1em; padding-top: 1em; border-top: 1px solid #666; }
+    #fixture input { border: 1px solid #999; width: 7em; margin: 0 1ex; }
   </style>
 </head>
 <body>
@@ -28,16 +27,8 @@
 
 <!-- HTML fixtures -->
 <div id="fixture">
-  <p>
-    <label for="date_field">Date field:</label>
-    <input type="text" id="date_field" />
-    <button onClick="new CalSelect('date_field');this.disabled=true;">enable</button>
-  </p>
-  <p>
-    <label for="some_other_field">Some other field:</label>
-    <input type="text" id="some_other_field" />
-    <button onClick="new CalSelect('some_other_field');this.disabled=true;">enable</button>
-  </p>
+  <label for="date_field">Date field:</label>
+  <input type="text" id="date_field" />
 </div>
 
 <!-- Tests follow -->
@@ -45,7 +36,6 @@
 // <![CDATA[
 
   var MockCalSelect = Class.create(CalSelect, {
-    visible: false,
     show: function() { this.visible = true; },
     hide: function() { this.visible = false; },
     setDate: function(date) { this.date = date; }
@@ -185,10 +175,19 @@
       assertEqual('smartParsed shinanza!', calSelect.getDate());
     }},
 
-    testSetDate_shouldDoStuff: function() { with(this) {
-      fail();
-    }}
+    testSetDate_shouldSetDateFieldValueToDateShortString: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      var date = new Date('12/02/2008');
+      calSelect.setDate(date);
+      assertEqual('12/02/08', $F('date_field'));
+    }},
 
+    testSetDate_shouldCallHide: function() { with(this) {
+      var calSelect = new CalSelect('date_field');
+      calSelect.hide = function() { this.hidden = true; }
+      calSelect.setDate(Date.today());
+      assert(calSelect.hidden);
+    }}
 
   }, "testlog");
 // ]]>
