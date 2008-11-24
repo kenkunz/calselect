@@ -23,6 +23,11 @@ CalSelect.RangeSelector responsibilities:
 - gets/sets dates?
 
 
+Basic Selector (CalSelect.Base)
+- binds "opener" onto date field
+- binds "closer" onto "date:clicked" and document click
+- creates one calendar, binds getter/setter to date field
+
 
 Range Selector (CalSelect.Range)
 - binds "opener" onto both start/end date fields
@@ -35,6 +40,6 @@ Range Selector (CalSelect.Range)
     the other's date?? or the range selector calls a method on each calendar
     with date range to tell it to highlight? perhaps selectRange/selectedRange?
 
-Basic Selector (CalSelect.Base)
-- binds "opener" onto date field
-- binds "closer" onto "date:clicked" and document click
+
+
+
