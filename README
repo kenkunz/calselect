@@ -1,0 +1,29 @@
+CalSelect is a JavaScript calendar date selection widget, built on top of
+the Prototype JS framework.
+
+Usage:
+
+  Include prototype.js (tested with 1.6.0.3), date_extensions.js, and
+  cal_select.js. You can use cal_select.css for vanilla styling, or create
+  your own stylesheet.
+  
+  A CalSelect instance is instantiated by passing the DOM id or or actual
+  DOM element of a form text input field:
+  
+  new CalSelect('date_field');
+
+
+Known Issues:
+
+- month-pager only works in FF2! (broken in FF3 and Safari, unknown for
+  other browsers)
+- field observer test only passes in Firefox due to how keydown event is
+  being simulated
+
+
+To Do:
+
+- fix paging!
+- fix field observer test to be cross-browser
+- use Ersatz for JS mocking
+- create a date-range selection widget
